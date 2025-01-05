@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -111,11 +112,25 @@ public class LeadsController {
 
 
 
-    @PostMapping("/add/{followUp}/{leadId}/{userId}")
-    public String followup(@PathVariable String followUp,
-                           @PathVariable Long leadId,
-                           @PathVariable Long userId) {
+    @PostMapping("/followup/{followUp}/{leadId}/{userId}")
+    public String followup(@PathVariable("followUp") String followUp,
+                           @PathVariable("leadId") Long leadId,
+                           @PathVariable("userId") Long userId) {
         try {
+            // Validate and parse the follow-up date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            dateFormat.setLenient(false); // Ensure strict date parsing
+
+            Date followUpDate;
+            try {
+                followUpDate = dateFormat.parse(followUp);
+            } catch (ParseException e) {
+                return "Invalid date format! Please use dd-MM-yyyy.";
+            }
+
+            // Format the date as a string in the desired format
+            String formattedFollowUpDate = dateFormat.format(followUpDate);
+
             // Fetch the lead from the database
             Optional<Leads> leadOptional = leadsRepository.findById(leadId);
             if (!leadOptional.isPresent()) {
@@ -128,7 +143,7 @@ public class LeadsController {
             String currentFollowupDate = lead.getFollowupDate();
 
             // Construct the new follow-up entry in the format: userId|date
-            String newFollowupEntry = userId + "|" + followUp;
+            String newFollowupEntry = userId + "|" + formattedFollowUpDate;
 
             // If there is no current follow-up data, add the new entry directly
             if (currentFollowupDate == null || currentFollowupDate.isEmpty()) {

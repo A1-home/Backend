@@ -48,7 +48,7 @@ public class UsersController {
     }
 
 
-    @GetMapping("/clients/{userId}")
+    @GetMapping("/leadsOf/{userId}")
     public ResponseEntity<?> getUserClients(@PathVariable("userId") Long userId) {
         // Fetch user by ID
         Users user = usersRepository.findById(userId)

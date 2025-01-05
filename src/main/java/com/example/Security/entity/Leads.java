@@ -19,9 +19,7 @@ public class Leads {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long leadId;  // Lead ID
 
-    @ManyToOne
-    @JoinColumn(name = "accountId")  // Foreign Key for Account
-    private Account account;  // The Account associated with the lead
+
 
     private String createdBy;  // Created By
 
@@ -88,7 +86,6 @@ public class Leads {
                 ", followupDate=" + followupDate +
                 ", remarks='" + remarks + '\'' +
                 ", createdAt=" + createdAt +
-                ", account=" + (account != null ? account.getAccountId() : "N/A") +
                 ", users=" + (users != null ? users.toString() : "No users assigned") +
                 '}';
     }
@@ -102,13 +99,7 @@ public class Leads {
         this.leadId = leadId;
     }
 
-    public Account getAccount() {
-        return account;
-    }
 
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     public String getCreatedBy() {
         return createdBy;
