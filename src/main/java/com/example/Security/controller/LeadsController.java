@@ -4,7 +4,7 @@ import com.example.Security.entity.Leads;
 import com.example.Security.entity.Users;
 import com.example.Security.repository.LeadsRepository;
 import com.example.Security.repository.UsersRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.Security.service.PaginationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,14 @@ public class LeadsController {
 
     private final LeadsRepository leadsRepository;
     private final UsersRepository usersRepository;
+    private final PaginationService paginationService;
+
 
     @Autowired
-    public LeadsController(LeadsRepository leadsRepository, UsersRepository usersRepository) {
+    public LeadsController(LeadsRepository leadsRepository, UsersRepository usersRepository, PaginationService paginationService) {
         this.leadsRepository = leadsRepository;
         this.usersRepository = usersRepository;
+        this.paginationService = paginationService;
     }
 
 
@@ -190,6 +193,20 @@ public class LeadsController {
     }
 
 
+
+    @GetMapping("/findAll")
+    public ResponseEntity<?> findAllLeads(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        try {
+            // Call the service to get paginated data
+            Map<String, Object> response = paginationService.getPaginatedLeads(page, size);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

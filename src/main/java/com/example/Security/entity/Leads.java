@@ -1,6 +1,7 @@
 package com.example.Security.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -59,7 +60,8 @@ public class Leads {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();  // Created At (current timestamp)
 
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonManagedReference
     @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Users> users;
 
