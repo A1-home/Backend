@@ -148,6 +148,16 @@ public class AuthService {
     }
 
 
+    private Map<String, Boolean> tokenStore = new HashMap<>();
 
+    // Method to destroy the token
+    public String destroyToken(String token) {
+        if (tokenStore.containsKey(token)) {
+            tokenStore.remove(token); // Remove token from the store
+            return "Token destroyed successfully.";
+        } else {
+            return "Token not found or already invalid.";
+        }
+    }
 }
 
