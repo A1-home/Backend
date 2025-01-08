@@ -43,7 +43,7 @@ public class Leads {
     private Boolean isLeading=false;
     private String altEmail;
     private String altPhoneNo;
-    private Double budget;
+    private String budget;
     private String tags;
 
 
@@ -209,11 +209,11 @@ public class Leads {
         isLeading = leading;
     }
 
-    public Double getBudget() {
+    public String getBudget() {
         return budget;
     }
 
-    public void setBudget(Double budget) {
+    public void setBudget(String budget) {
         this.budget = budget;
     }
 

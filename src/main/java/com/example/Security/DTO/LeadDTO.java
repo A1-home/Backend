@@ -23,7 +23,7 @@ public class LeadDTO {
     private String scope;
     private String altEmail;
     private String altPhoneNo;
-    private Double budget;
+    private String budget;
     private String tags;
     private Date startDate;
     private Date createdAt;
@@ -31,7 +31,7 @@ public class LeadDTO {
     private List<RemarkDTO> remarks;       // Parsed remarks
     private List<FollowupDTO> followups;  // Parsed follow-up dates
 
-    public LeadDTO(Long leadId, String createdBy, String clientName, String altClientName, String phoneNo, String primaryEmail, String projectName, String description, String source, String status, String scope, String altEmail, String altPhoneNo, Double budget, String tags, Date startDate, Date createdAt, List<RemarkDTO> remarks, List<FollowupDTO> followups) {
+    public LeadDTO(Long leadId, String createdBy, String clientName, String altClientName, String phoneNo, String primaryEmail, String projectName, String description, String source, String status, String scope, String altEmail, String altPhoneNo, String budget, String tags, Date startDate, Date createdAt, List<RemarkDTO> remarks, List<FollowupDTO> followups) {
         this.leadId = leadId;
         this.createdBy = createdBy;
         this.clientName = clientName;
@@ -157,11 +157,11 @@ public class LeadDTO {
         this.altPhoneNo = altPhoneNo;
     }
 
-    public Double getBudget() {
+    public String getBudget() {
         return budget;
     }
 
-    public void setBudget(Double budget) {
+    public void setBudget(String budget) {
         this.budget = budget;
     }
 
