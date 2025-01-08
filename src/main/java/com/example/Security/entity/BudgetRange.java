@@ -16,13 +16,14 @@ public class BudgetRange  {
     @Column(name = "account_id", nullable = false)
     private Long accountId;
 
-    @Column(name = "min_budget", nullable = false)
-    private BigDecimal minBudget;
+    private String budget;
 
-    @Column(name = "max_budget", nullable = false)
-    private BigDecimal maxBudget;
+    public BudgetRange(Long id, Long accountId, String budget) {
+        this.id = id;
+        this.accountId = accountId;
+        this.budget = budget;
+    }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -39,19 +40,17 @@ public class BudgetRange  {
         this.accountId = accountId;
     }
 
-    public BigDecimal getMinBudget() {
-        return minBudget;
+    public String getBudget() {
+        return budget;
     }
 
-    public void setMinBudget(BigDecimal minBudget) {
-        this.minBudget = minBudget;
-    }
-
-    public BigDecimal getMaxBudget() {
-        return maxBudget;
-    }
-
-    public void setMaxBudget(BigDecimal maxBudget) {
-        this.maxBudget = maxBudget;
+    public void setBudget(String budget) {
+        this.budget = budget;
     }
 }
+
+
+
+
+    // Getters and Setters
+
