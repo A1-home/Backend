@@ -1,9 +1,11 @@
 package com.example.Security.controller;
 
+import com.example.Security.DTO.LeadDTO;
 import com.example.Security.entity.Leads;
 import com.example.Security.entity.Users;
 import com.example.Security.repository.LeadsRepository;
 import com.example.Security.repository.UsersRepository;
+import com.example.Security.service.LeadService;
 import com.example.Security.service.PaginationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,18 +18,21 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/leads")
 public class LeadsController {
 
     private final LeadsRepository leadsRepository;
+    private final LeadService leadService;
     private final UsersRepository usersRepository;
     private final PaginationService paginationService;
 
 
     @Autowired
-    public LeadsController(LeadsRepository leadsRepository, UsersRepository usersRepository, PaginationService paginationService) {
+    public LeadsController(LeadsRepository leadsRepository, LeadService leadService, UsersRepository usersRepository, PaginationService paginationService) {
         this.leadsRepository = leadsRepository;
+        this.leadService = leadService;
         this.usersRepository = usersRepository;
         this.paginationService = paginationService;
     }
@@ -72,10 +77,13 @@ public class LeadsController {
     @PostMapping("/addRemarks")
     public String addRemarks(@RequestBody Map<String, Object> requestData) {
         try {
-            // Extract userId, leadId, and remarks from the request body
+            // Extract userId, leadId, userName, and remarks from the request body
             Long userId = Long.parseLong(requestData.get("userId").toString());
             Long leadId = Long.parseLong(requestData.get("leadId").toString());
+            String userName = requestData.get("userName").toString();
             String remarks = requestData.get("remarks").toString();
+
+            System.out.println(userId);
 
             // Fetch the lead from the database
             Optional<Leads> leadOptional = leadsRepository.findById(leadId);
@@ -88,14 +96,15 @@ public class LeadsController {
             // Fetch current remarks
             String currentRemarks = lead.getRemarks();
 
-            // Format the current date in dd-MM-yyyy format (hyphen as separator)
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String currentDate = dateFormat.format(new Date());
+            // Format the current date and time in IST
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+            String currentDateTime = dateFormat.format(new Date());
 
-            // Construct the new remark in the format: userId|date|remark
-            String newRemark = userId + "|" + currentDate + "|" + remarks;
+            // Construct the new remark in the correct format
+            String newRemark = userId.toString() + "|" + userName + "|" + currentDateTime + "|" + remarks;
 
-            // Append the new remark to the existing remarks using a delimiter (e.g., ";")
+            // Append the new remark to the existing remarks using a delimiter
             if (currentRemarks != null && !currentRemarks.isEmpty()) {
                 currentRemarks += ";" + newRemark;
             } else {
@@ -104,6 +113,7 @@ public class LeadsController {
 
             // Update the lead's remarks and save it
             lead.setRemarks(currentRemarks);
+            System.out.println(currentRemarks);
             leadsRepository.save(lead);
 
             return "Remark added successfully!";
@@ -112,6 +122,8 @@ public class LeadsController {
             return "An error occurred while adding the remark.";
         }
     }
+
+
 
 
 
@@ -207,6 +219,27 @@ public class LeadsController {
             return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    @GetMapping("/LeadWithRemarks/{leadId}")
+    public ResponseEntity<?> findLeadwithRemarks(@PathVariable("leadId") Long leadId) {
+        try {
+            LeadDTO leadDTO = leadService.findLeadById(leadId);
+            return ResponseEntity.ok(leadDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/findById/{leadId}")
+    public Optional<Leads> LeadById(@PathVariable("leadId") Long leadId)
+    {
+        return leadsRepository.findById(leadId);
+    }
+
+
+
 
 
 

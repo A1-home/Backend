@@ -40,7 +40,7 @@ public class Leads {
 
     private String status;  // Status
     private String scope;
-
+    private Boolean isLeading=false;
     private String altEmail;
     private String altPhoneNo;
     private Double budget;
@@ -80,6 +80,7 @@ public class Leads {
                 ", source='" + source + '\'' +
                 ", status='" + status + '\'' +
                 ", scope='" + scope + '\'' +
+                ", isLeading='"+isLeading +'\''+
                 ", altEmail='" + altEmail + '\'' +
                 ", altPhoneNo='" + altPhoneNo + '\'' +
                 ", budget=" + budget +
@@ -198,6 +199,14 @@ public class Leads {
 
     public void setAltPhoneNo(String altPhoneNo) {
         this.altPhoneNo = altPhoneNo;
+    }
+
+    public Boolean getLeading() {
+        return isLeading;
+    }
+
+    public void setLeading(Boolean leading) {
+        isLeading = leading;
     }
 
     public Double getBudget() {

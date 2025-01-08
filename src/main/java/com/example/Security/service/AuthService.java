@@ -6,15 +6,17 @@ import com.example.Security.entity.Users;
 import com.example.Security.repository.AccountRepository;
 import com.example.Security.repository.UserRepository;
 import com.example.Security.repository.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -25,12 +27,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, UsersRepository usersRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, UsersRepository usersRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RestTemplate restTemplate) {
         this.userRepository = userRepository;
         this.usersRepository = usersRepository;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.restTemplate = restTemplate;
     }
 
     public String signup(String name, String email, String password) {
@@ -57,6 +60,32 @@ public class AuthService {
     }
 
 
+//    public ResponseEntity<Map<String, Object>> UsersLogin(String email, String password) {
+//        // Find the user by email
+//        Users user = usersRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("No user found"));
+//
+//        // Verify the password
+//        if (!passwordEncoder.matches(password, user.getPassword())) {
+//            throw new BadCredentialsException("Invalid email or password");
+//        }
+//
+//        // Generate the JWT token
+//        String token = jwtUtil.generateToken(email);
+//
+//        // Prepare the response map
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("token", token);
+//        response.put("user", user);
+//        System.out.println(user);
+//
+//        // Return the response with HTTP 200 status
+//        return ResponseEntity.ok(response);
+//    }
+
+    @Autowired
+    private final RestTemplate restTemplate;
+
     public ResponseEntity<Map<String, Object>> UsersLogin(String email, String password) {
         // Find the user by email
         Users user = usersRepository.findByEmail(email)
@@ -70,17 +99,34 @@ public class AuthService {
         // Generate the JWT token
         String token = jwtUtil.generateToken(email);
 
+        // Fetch data using the accountId
+        Long accountId = user.getAccount().getAccountId();
+        String baseUrl = "http://localhost:8080";
+
+        // Fetch budgets
+        List<?> budgets = restTemplate.getForObject(baseUrl + "/budget/find/" + accountId, List.class);
+
+        // Fetch sources
+        List<?> sources = restTemplate.getForObject(baseUrl + "/leadSource/find/" + accountId, List.class);
+
+        // Fetch scopes
+        List<?> scopes = restTemplate.getForObject(baseUrl + "/leadScope/find/" + accountId, List.class);
+
+        // Fetch statuses
+        List<?> statuses = restTemplate.getForObject(baseUrl + "/leadStatus/find/" + accountId, List.class);
+
         // Prepare the response map
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
         response.put("user", user);
+        response.put("budgets", budgets);
+        response.put("sources", sources);
+        response.put("scopes", scopes);
+        response.put("statuses", statuses);
 
         // Return the response with HTTP 200 status
         return ResponseEntity.ok(response);
     }
-
-
-
 
 
 
@@ -99,6 +145,19 @@ public class AuthService {
     {
         return passwordEncoder.encode(password);
 
+    }
+
+
+    private Map<String, Boolean> tokenStore = new HashMap<>();
+
+    // Method to destroy the token
+    public String destroyToken(String token) {
+        if (tokenStore.containsKey(token)) {
+            tokenStore.remove(token); // Remove token from the store
+            return "Token destroyed successfully.";
+        } else {
+            return "Token not found or already invalid.";
+        }
     }
 }
 
