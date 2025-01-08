@@ -123,54 +123,6 @@ public class LeadsController {
         }
     }
 
-//    @PutMapping("/updateRemarks")
-//    public String updateRemarks(@RequestBody Map<String, Object> requestData) {
-//        try {
-//            // Extract userId, leadId, userName, and remarks from the request body
-//            Long userId = Long.parseLong(requestData.get("userId").toString());
-//            Long leadId = Long.parseLong(requestData.get("leadId").toString());
-//            String userName = requestData.get("userName").toString();
-//            String remarks = requestData.get("remarks").toString();
-//
-//            System.out.println(userId);
-//
-//            // Fetch the lead from the database
-//            Optional<Leads> leadOptional = leadsRepository.findById(leadId);
-//            if (!leadOptional.isPresent()) {
-//                return "Lead not found!";
-//            }
-//
-//            Leads lead = leadOptional.get();
-//
-//            // Fetch current remarks
-//            String currentRemarks = lead.getRemarks();
-//
-//            // Format the current date and time in IST
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-//            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-//            String currentDateTime = dateFormat.format(new Date());
-//
-//            // Construct the new remark in the correct format
-//            String newRemark = userId.toString() + "|" + userName + "|" + currentDateTime + "|" + remarks;
-//
-//            // Append the new remark to the existing remarks using a delimiter
-//            if (currentRemarks != null && !currentRemarks.isEmpty()) {
-//                currentRemarks += ";" + newRemark;
-//            } else {
-//                currentRemarks = newRemark;
-//            }
-//
-//            // Update the lead's remarks and save it
-//            lead.setRemarks(currentRemarks);
-//            System.out.println(currentRemarks);
-//            leadsRepository.save(lead);
-//
-//            return "Remark updated successfully!";
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "An error occurred while updating the remark.";
-//        }
-//    }
 
 
 
@@ -287,6 +239,48 @@ public class LeadsController {
         return leadsRepository.findById(leadId);
     }
 
+
+    @PutMapping("/updateStatus")
+    public ResponseEntity<Map<String, Object>> updateStatus(@RequestBody Map<String, Object> requestData) {
+        try {
+            // Extract leadId and status from the request body
+            Long leadId = Long.parseLong(requestData.get("leadId").toString());
+            String status = requestData.get("status").toString();
+
+            // Retrieve the lead by leadId from the repository
+            Optional<Leads> optionalLead = leadsRepository.findById(leadId);
+            if (!optionalLead.isPresent()) {
+                // Return a failure message if lead is not found
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Lead not found!");
+                response.put("status", "error");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            Leads lead = optionalLead.get();
+
+            // Update the status of the lead
+            lead.setStatus(status);
+
+            // Save the updated lead object back to the repository
+            leadsRepository.save(lead);
+
+            // Return a success message if lead status is updated successfully
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Lead status updated successfully!");
+            response.put("status", "success");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Return an error message if any exception occurs
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Error occurred while updating lead status");
+            response.put("status", "error");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

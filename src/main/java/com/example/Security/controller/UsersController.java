@@ -64,7 +64,7 @@ public class UsersController {
     public ResponseEntity<?> getUserClients(
             @PathVariable("userId") Long userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "8") int size) {
         try {
             // Fetch user by ID
             Users user = usersRepository.findById(userId)

@@ -18,8 +18,60 @@ public class LeadStatusConfig  {
     @Column(name = "status_name", nullable = false)
     private String statusName;
 
+
+    private Boolean isactive=false;
+    private Boolean showcolorTip=false;
+
     @Column(name = "color_code", nullable = false)
     private String colorCode;
+
+    public LeadStatusConfig(Long id, Long accountId, String statusName, Boolean isactive, Boolean showcolorTip, String colorCode, String tempColor) {
+        this.id = id;
+        this.accountId = accountId;
+        this.statusName = statusName;
+        this.isactive = isactive;
+        this.showcolorTip = showcolorTip;
+        this.colorCode = colorCode;
+        this.tempColor = tempColor;
+    }
+
+    private String tempColor;
+
+    public String getTempColor() {
+        return tempColor;
+    }
+
+    public void setTempColor(String tempColor) {
+        this.tempColor = tempColor;
+    }
+
+    public LeadStatusConfig(Long id, Long accountId, String statusName, Boolean isactive, Boolean showcolorTip, String colorCode) {
+        this.id = id;
+        this.accountId = accountId;
+        this.statusName = statusName;
+        this.isactive = isactive;
+        this.showcolorTip = showcolorTip;
+        this.colorCode = colorCode;
+    }
+
+    public LeadStatusConfig() {
+    }
+
+    public Boolean getIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(Boolean isactive) {
+        this.isactive = isactive;
+    }
+
+    public Boolean getShowcolorTip() {
+        return showcolorTip;
+    }
+
+    public void setShowcolorTip(Boolean showcolorTip) {
+        this.showcolorTip = showcolorTip;
+    }
 
     // Getters and Setters
     public Long getId() {
