@@ -74,8 +74,57 @@ public class LeadsController {
 
 
 
-    @PostMapping("/addRemarks")
-    public String addRemarks(@RequestBody Map<String, Object> requestData) {
+//    @PostMapping("/addRemarks")
+//    public String addRemarks(@RequestBody Map<String, Object> requestData) {
+//        try {
+//            // Extract userId, leadId, userName, and remarks from the request body
+//            Long userId = Long.parseLong(requestData.get("userId").toString());
+//            Long leadId = Long.parseLong(requestData.get("leadId").toString());
+//            String userName = requestData.get("userName").toString();
+//            String remarks = requestData.get("remarks").toString();
+//
+//            System.out.println(userId);
+//
+//            // Fetch the lead from the database
+//            Optional<Leads> leadOptional = leadsRepository.findById(leadId);
+//            if (!leadOptional.isPresent()) {
+//                return "Lead not found!";
+//            }
+//
+//            Leads lead = leadOptional.get();
+//
+//            // Fetch current remarks
+//            String currentRemarks = lead.getRemarks();
+//
+//            // Format the current date and time in IST
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+//            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+//            String currentDateTime = dateFormat.format(new Date());
+//
+//            // Construct the new remark in the correct format
+//            String newRemark = userId.toString() + "|" + userName + "|" + currentDateTime + "|" + remarks;
+//
+//            // Append the new remark to the existing remarks using a delimiter
+//            if (currentRemarks != null && !currentRemarks.isEmpty()) {
+//                currentRemarks += ";" + newRemark;
+//            } else {
+//                currentRemarks = newRemark;
+//            }
+//
+//            // Update the lead's remarks and save it
+//            lead.setRemarks(currentRemarks);
+//            System.out.println(currentRemarks);
+//            leadsRepository.save(lead);
+//
+//            return "Remark added successfully!";
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "An error occurred while adding the remark.";
+//        }
+//    }
+
+    @PutMapping("/updateRemarks")
+    public String updateRemarks(@RequestBody Map<String, Object> requestData) {
         try {
             // Extract userId, leadId, userName, and remarks from the request body
             Long userId = Long.parseLong(requestData.get("userId").toString());
@@ -116,10 +165,10 @@ public class LeadsController {
             System.out.println(currentRemarks);
             leadsRepository.save(lead);
 
-            return "Remark added successfully!";
+            return "Remark updated successfully!";
         } catch (Exception e) {
             e.printStackTrace();
-            return "An error occurred while adding the remark.";
+            return "An error occurred while updating the remark.";
         }
     }
 
