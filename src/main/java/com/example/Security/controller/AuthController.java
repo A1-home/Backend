@@ -36,6 +36,8 @@ public class AuthController {
     @PostMapping("/UserLogin")
     public ResponseEntity<?> Userlogin(@RequestBody Map<String, String> request) {
         try {
+
+            System.out.println(request.get("email")+" "+ request.get("password"));
             // Call the UsersLogin method and directly return its ResponseEntity
             return authService.UsersLogin(request.get("email"), request.get("password"));
         } catch (UsernameNotFoundException | BadCredentialsException ex) {

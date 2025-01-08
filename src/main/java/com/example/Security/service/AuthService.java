@@ -88,6 +88,8 @@ public class AuthService {
 
     public ResponseEntity<Map<String, Object>> UsersLogin(String email, String password) {
         // Find the user by email
+
+        System.out.println(email +" "+ password);
         Users user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("No user found"));
 

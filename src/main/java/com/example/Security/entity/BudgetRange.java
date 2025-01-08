@@ -24,6 +24,9 @@ public class BudgetRange  {
         this.budget = budget;
     }
 
+    public BudgetRange() {
+    }
+
     public Long getId() {
         return id;
     }
