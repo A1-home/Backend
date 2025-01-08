@@ -5,9 +5,12 @@ import com.example.Security.entity.LeadStatusConfig;
 import com.example.Security.repository.BudgetRangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @CrossOrigin
@@ -24,9 +27,22 @@ public class BudgetRangeController {
 
 
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public BudgetRange addBudgetRange(@RequestBody BudgetRange budgetRange) {
-        return budgetRangeRepository.save(budgetRange);
+    public ResponseEntity<?> addBudgetRange(@RequestBody BudgetRange budgetRange) {
+        try {
+            // Save the budgetRange to the repository
+            BudgetRange savedBudgetRange = budgetRangeRepository.save(budgetRange);
+
+            // Create a success message
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Budget range added successfully!");
+            response.put("status", "success");
+
+            // Return the response with the saved budgetRange and the success message
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error occurred while adding budget range", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
