@@ -151,6 +151,26 @@ public class UsersController {
     }
 
 
+    @GetMapping("/activeUsers/{accountId}")
+    public Long countActiveUSer(@PathVariable("accountId") Long accountId)
+    {
+        return usersRepository.countActiveUsers(accountId);
+    }
+
+    @GetMapping("/activeUsersList/{accountId}")
+    public  List<Users> activeUsersList(@PathVariable("accountId") Long accountId)
+    {
+       return usersRepository.findActiveUsersList(accountId);
+    }
+
+    @GetMapping("/deactiveUsersList/{accountId}")
+    public  List<Users> deactiveUsersList(@PathVariable("accountId") Long accountId)
+    {
+        return usersRepository.findDeActiveUsersList(accountId);
+    }
+
+
+
 
 
 

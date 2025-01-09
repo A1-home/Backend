@@ -17,6 +17,8 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId; // Account ID (Primary Key)
 
+    //Representative name bhi hoga
+
     private String companyName; // Company Name
 
     private String paymentId; // Payment ID

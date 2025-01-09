@@ -25,7 +25,7 @@ public class Users {
     @ManyToOne
     @JoinColumn(name = "accountId")  // Foreign Key for Account
     private Account account;  // The Account associated with the user
-
+    private Boolean isActive=true;
     private String userName;  // User Name
     private String email;  // Email
     private String phoneNumber;  // Phone Number

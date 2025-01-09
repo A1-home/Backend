@@ -18,7 +18,7 @@ public class LeadConfig {
     private String colorCode;
 
 
-    private Boolean isactive=false;
+    private Boolean isactive=true;
 
     private String type;
 

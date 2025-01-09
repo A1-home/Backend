@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin
 @RequestMapping("/budget")
@@ -36,6 +37,9 @@ public class BudgetController {
 
     @DeleteMapping("/delete/{Id}")
     public String deleteLeadConfig(@PathVariable("Id") Long Id) {
+
+        Optional<LeadConfig> leadConfig=leadConfigRepository.findById(Id);
+//        if(leadConfig!=null && leadConfig.)
         if (leadConfigRepository.existsById(Id)) {
             leadConfigRepository.deleteById(Id);
             return "successfully deleted.";

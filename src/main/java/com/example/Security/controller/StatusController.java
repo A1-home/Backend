@@ -35,15 +35,16 @@ public class StatusController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteLeadStatus(@PathVariable Long id) {
-        if (leadConfigRepository.existsById(id)) {
-            leadConfigRepository.deleteById(id);
-            return "LeadConfig with ID " + id + " has been successfully deleted.";
-        } else {
-            return "LeadConfig with ID " + id + " not found.";
-        }
-    }
+    //No need
+//    @DeleteMapping("/delete/{id}")
+//    public String deleteLeadStatus(@PathVariable Long id) {
+//        if (leadConfigRepository.existsById(id)) {
+//            leadConfigRepository.deleteById(id);
+//            return "LeadConfig with ID " + id + " has been successfully deleted.";
+//        } else {
+//            return "LeadConfig with ID " + id + " not found.";
+//        }
+//    }
 
 
     @PutMapping("/update")

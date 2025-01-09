@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -240,45 +239,75 @@ public class LeadsController {
     }
 
 
-    @PutMapping("/updateStatus")
-    public ResponseEntity<Map<String, Object>> updateStatus(@RequestBody Map<String, Object> requestData) {
-        try {
-            // Extract leadId and status from the request body
-            Long leadId = Long.parseLong(requestData.get("leadId").toString());
-            String status = requestData.get("status").toString();
 
-            // Retrieve the lead by leadId from the repository
-            Optional<Leads> optionalLead = leadsRepository.findById(leadId);
-            if (!optionalLead.isPresent()) {
-                // Return a failure message if lead is not found
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Lead not found!");
-                response.put("status", "error");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+
+    @PutMapping("/updateStatus")
+    public String updateLeadStatus(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("leadId"));
+
+        Leads leads = leadsRepository.findById(id).orElse(null);
+
+        if (leads != null) {
+            if (request.containsKey("status")) {
+                leads.setBudget(request.get("status"));
             }
 
-            Leads lead = optionalLead.get();
+            return "Status Updated";
+        } else {
+            throw new RuntimeException("Lead with ID " + id + " not found");
+        }
+    }
 
-            // Update the status of the lead
-            lead.setStatus(status);
 
-            // Save the updated lead object back to the repository
-            leadsRepository.save(lead);
+    @PutMapping("/updateBudget")
+    public String updateLeadBudget(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("leadId"));
 
-            // Return a success message if lead status is updated successfully
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Lead status updated successfully!");
-            response.put("status", "success");
+        Leads leads = leadsRepository.findById(id).orElse(null);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        if (leads != null) {
+            if (request.containsKey("budget")) {
+                leads.setBudget(request.get("budget"));
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Return an error message if any exception occurs
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Error occurred while updating lead status");
-            response.put("status", "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return "Budget Updated";
+        } else {
+            throw new RuntimeException("Lead with ID " + id + " not found");
+        }
+    }
+
+    @PutMapping("/updateScope")
+    public String updateLeadScope(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("leadId"));
+
+        Leads leads = leadsRepository.findById(id).orElse(null);
+
+        if (leads != null) {
+            if (request.containsKey("scope")) {
+                leads.setScope(request.get("scope"));
+            }
+
+            return "Scope Updated";
+        } else {
+            throw new RuntimeException("Lead with ID " + id + " not found");
+        }
+    }
+
+
+    @PutMapping("/updateSource")
+    public String updateLeadSource(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("leadId"));
+
+        Leads leads = leadsRepository.findById(id).orElse(null);
+
+        if (leads != null) {
+            if (request.containsKey("source")) {
+                leads.setSource(request.get("source"));
+            }
+
+            return "Source Updated";
+        } else {
+            throw new RuntimeException("Lead with ID " + id + " not found");
         }
     }
 
