@@ -106,16 +106,16 @@ public class AuthService {
         String baseUrl = "http://localhost:8080";
 
         // Fetch budgets
-        List<?> budgets = restTemplate.getForObject(baseUrl + "/budget/find/" + accountId, List.class);
+        List<?> budgets = restTemplate.getForObject(baseUrl + "/budget/find/" + accountId+"/Budget", List.class);
 
         // Fetch sources
-        List<?> sources = restTemplate.getForObject(baseUrl + "/leadSource/find/" + accountId, List.class);
+        List<?> sources = restTemplate.getForObject(baseUrl + "/source/find/" + accountId+"/Source", List.class);
 
         // Fetch scopes
-        List<?> scopes = restTemplate.getForObject(baseUrl + "/leadScope/find/" + accountId, List.class);
+        List<?> scopes = restTemplate.getForObject(baseUrl + "/scope/find/" + accountId+"/Scope", List.class);
 
         // Fetch statuses
-        List<?> statuses = restTemplate.getForObject(baseUrl + "/leadStatus/find/" + accountId, List.class);
+        List<?> statuses = restTemplate.getForObject(baseUrl + "/status/find/" + accountId+"/Status", List.class);
 
         // Prepare the response map
         Map<String, Object> response = new HashMap<>();
