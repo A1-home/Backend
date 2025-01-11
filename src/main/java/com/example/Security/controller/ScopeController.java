@@ -43,13 +43,21 @@ public class ScopeController {
             if (request.containsKey("name")) {
                 leadConfig.setName(request.get("name"));
             }
-
             return leadConfigRepository.save(leadConfig);
         } else {
             throw new RuntimeException("LeadConfig with ID " + id + " not found");
         }
     }
 
+        @DeleteMapping("/delete/{id}")
+    public String deleteLeadStatus(@PathVariable Long id) {
+        if (leadConfigRepository.existsById(id)) {
+            leadConfigRepository.deleteById(id);
+            return "LeadConfig with ID " + id + " has been successfully deleted.";
+        } else {
+            return "LeadConfig with ID " + id + " not found.";
+        }
+    }
 
 
 }

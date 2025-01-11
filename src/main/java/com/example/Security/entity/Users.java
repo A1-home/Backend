@@ -37,6 +37,8 @@ public class Users {
     private Date createdAt = new Date();
 
 
+
+
     @JsonBackReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -45,6 +47,7 @@ public class Users {
             inverseJoinColumns = @JoinColumn(name = "leadId")
     )
     private List<Leads> leads;
+
 
     @Override
     public String toString() {

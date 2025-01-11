@@ -7,6 +7,7 @@ import com.example.Security.repository.AccountRepository;
 import com.example.Security.repository.LeadsRepository;
 import com.example.Security.repository.UsersRepository;
 import com.example.Security.service.AuthService;
+import com.example.Security.service.PaginationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,9 @@ public class UsersController {
     private final AccountRepository accountRepository;
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private PaginationService paginationService;
 
     @Autowired
     private LeadsRepository leadsRepository;
@@ -113,42 +117,26 @@ public class UsersController {
 
 
 
-    @GetMapping("/searchLeads")
-    public ResponseEntity<?> searchLeadsByFlexibleName(
-            @RequestParam("name") String name,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        try {
-            // Search leads by flexible name
-            List<Leads> matchingLeads = leadsRepository.searchFlexibleLeadsByName(name);
 
-            if (matchingLeads.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given name.");
-            }
-
-            int startIndex = page * size;
-            int endIndex = Math.min(startIndex + size, matchingLeads.size());
-
-            if (startIndex >= matchingLeads.size()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Page out of range.");
-            }
-
-            // Create a sublist for the current page
-            List<Leads> paginatedLeads = matchingLeads.subList(startIndex, endIndex);
-
-            // Build the response
-            Map<String, Object> response = new HashMap<>();
-            response.put("totalItems", matchingLeads.size());
-            response.put("leads", paginatedLeads);
-            response.put("totalPages", (int) Math.ceil((double) matchingLeads.size() / size));
-            response.put("currentPage", page);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
-        }
-    }
+//    @GetMapping("/searchLeads")
+//    public ResponseEntity<?> searchLeadsByFlexibleName(
+//            @RequestParam("name") String name,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        try {
+//            // Call PaginationService for paginated leads search
+//            Map<String, Object> paginatedLeads = paginationService.getPaginatedResults(page, size, name);
+//
+//            if (paginatedLeads.get("leads")==null) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given name.");
+//            }
+//
+//            return ResponseEntity.ok(paginatedLeads);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
+//        }
+//    }
 
 
     @GetMapping("/activeUsers/{accountId}")

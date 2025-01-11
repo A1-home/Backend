@@ -20,9 +20,9 @@ public class Leads {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long leadId;  // Lead ID
 
-
-
     private String createdBy;  // Created By
+
+   private Long accountId;
 
     private String clientName;  // Client Name
 
@@ -65,12 +65,44 @@ public class Leads {
     @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Users> users;
 
+//    @JsonManagedReference
+//    @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    private List<Users> users;
+
+//    @Override
+//    public String toString() {
+//        return "Leads{" +
+//                "leadId=" + leadId +
+//                ", createdBy='" + createdBy + '\'' +
+//
+//                ", clientName='" + clientName + '\'' +
+//                ", altClientName='" + altClientName + '\'' +
+//                ", phoneNo='" + phoneNo + '\'' +
+//                ", primaryEmail='" + primaryEmail + '\'' +
+//                ", projectName='" + projectName + '\'' +
+//                ", description='" + description + '\'' +
+//                ", source='" + source + '\'' +
+//                ", status='" + status + '\'' +
+//                ", scope='" + scope + '\'' +
+//                ", isLeading='"+isLeading +'\''+
+//                ", altEmail='" + altEmail + '\'' +
+//                ", altPhoneNo='" + altPhoneNo + '\'' +
+//                ", budget=" + budget +
+//                ", tags='" + tags + '\'' +
+//                ", startDate=" + startDate +
+//                ", followupDate=" + followupDate +
+//                ", remarks='" + remarks + '\'' +
+//                ", createdAt=" + createdAt +
+//                ", users=" + (users != null ? users.toString() : "No users assigned") +
+//                '}';
+//    }
 
     @Override
     public String toString() {
         return "Leads{" +
                 "leadId=" + leadId +
                 ", createdBy='" + createdBy + '\'' +
+                ", accountId=" + accountId + // Added accountId to the toString
                 ", clientName='" + clientName + '\'' +
                 ", altClientName='" + altClientName + '\'' +
                 ", phoneNo='" + phoneNo + '\'' +
@@ -80,10 +112,10 @@ public class Leads {
                 ", source='" + source + '\'' +
                 ", status='" + status + '\'' +
                 ", scope='" + scope + '\'' +
-                ", isLeading='"+isLeading +'\''+
+                ", isLeading='" + isLeading + '\'' +
                 ", altEmail='" + altEmail + '\'' +
                 ", altPhoneNo='" + altPhoneNo + '\'' +
-                ", budget=" + budget +
+                ", budget='" + budget + '\'' +
                 ", tags='" + tags + '\'' +
                 ", startDate=" + startDate +
                 ", followupDate=" + followupDate +
@@ -92,6 +124,8 @@ public class Leads {
                 ", users=" + (users != null ? users.toString() : "No users assigned") +
                 '}';
     }
+
+
 
 
     public Long getLeadId() {
@@ -126,6 +160,14 @@ public class Leads {
 
     public void setAltClientName(String altClientName) {
         this.altClientName = altClientName;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public String getPhoneNo() {
