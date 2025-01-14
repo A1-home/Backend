@@ -135,34 +135,75 @@ public interface LeadsRepository extends JpaRepository<Leads,Long> {
 //            @Param("lastDate") String lastDate,
 //            Pageable pageable
 //    );
-// Query for filtering by assigned user and source
-@Query("SELECT l FROM Leads l JOIN l.users u WHERE (:assignedTo IS NULL OR u.userId = :assignedTo) " +
-        "AND (:source IS NULL OR l.source = :source)")
-Page<Leads> findByAssignedToAndSource(
-        @Param("assignedTo") Long assignedTo,
-        @Param("source") String source,
-        Pageable pageable
-);
 
+
+// Query for filtering by assigned user and source
+//@Query("SELECT l FROM Leads l JOIN l.users u WHERE (:assignedTo IS NULL OR u.userId = :assignedTo) " +
+//        "AND (:source IS NULL OR l.source = :source)")
+//Page<Leads> findByAssignedToAndSource(
+//        @Param("accountId" )Long accountId,
+//        @Param("assignedTo") Long assignedTo,
+//        @Param("source") String source,
+//        Pageable pageable
+//);
+
+    @Query("SELECT l FROM Leads l JOIN l.users u WHERE l.accountId = :accountId " +
+            "AND (:assignedTo IS NULL OR u.userId = :assignedTo) " +
+            "AND (:source IS NULL OR l.source = :source)")
+    Page<Leads> findByAssignedToAndSource(
+            @Param("accountId") Long accountId,
+            @Param("assignedTo") Long assignedTo,
+            @Param("source") String source,
+            Pageable pageable
+    );
     // Query for filtering by assigned user only
-    @Query("SELECT l FROM Leads l JOIN l.users u WHERE (:assignedTo IS NULL OR u.userId = :assignedTo)")
+//    @Query("SELECT l FROM Leads l JOIN l.users u WHERE (:assignedTo IS NULL OR u.userId = :assignedTo)")
+//    Page<Leads> findByAssignedTo(
+//            @Param("accountId" )Long accountId,
+//            @Param("assignedTo") Long assignedTo,
+//            Pageable pageable
+//    );
+
+    @Query("SELECT l FROM Leads l JOIN l.users u WHERE l.accountId = :accountId " +
+            "AND (:assignedTo IS NULL OR u.userId = :assignedTo)")
     Page<Leads> findByAssignedTo(
+            @Param("accountId") Long accountId,
             @Param("assignedTo") Long assignedTo,
             Pageable pageable
     );
 
     // Query for filtering by source only
-    @Query("SELECT l FROM Leads l WHERE (:source IS NULL OR l.source = :source)")
+//    @Query("SELECT l FROM Leads l WHERE (:source IS NULL OR l.source = :source)")
+//    Page<Leads> findBySource(
+//            @Param("accountId" )Long accountId,
+//            @Param("source") String source,
+//            Pageable pageable
+//    );
+    @Query("SELECT l FROM Leads l WHERE l.accountId = :accountId " +
+            "AND (:source IS NULL OR l.source = :source)")
     Page<Leads> findBySource(
+            @Param("accountId") Long accountId,
             @Param("source") String source,
             Pageable pageable
     );
 
+
     // Query for filtering by created date and last date with proper date comparison
-    @Query("SELECT l FROM Leads l WHERE " +
-            "(:createdDate IS NULL OR CAST(l.createdAt AS date) >= CAST(:createdDate AS date)) " +
+//    @Query("SELECT l FROM Leads l WHERE " +
+//            "(:createdDate IS NULL OR CAST(l.createdAt AS date) >= CAST(:createdDate AS date)) " +
+//            "AND (:lastDate IS NULL OR CAST(l.createdAt AS date) <= CAST(:lastDate AS date))")
+//    Page<Leads> findByCreatedDateAndLastDate(
+//            @Param("accountId" )Long accountId,
+//            @Param("createdDate") String createdDate,
+//            @Param("lastDate") String lastDate,
+//            Pageable pageable
+//    );
+
+    @Query("SELECT l FROM Leads l WHERE l.accountId = :accountId " +
+            "AND (:createdDate IS NULL OR CAST(l.createdAt AS date) >= CAST(:createdDate AS date)) " +
             "AND (:lastDate IS NULL OR CAST(l.createdAt AS date) <= CAST(:lastDate AS date))")
     Page<Leads> findByCreatedDateAndLastDate(
+            @Param("accountId") Long accountId,
             @Param("createdDate") String createdDate,
             @Param("lastDate") String lastDate,
             Pageable pageable
@@ -170,18 +211,37 @@ Page<Leads> findByAssignedToAndSource(
 
 
     // General query for filtering by assigned user, source, created date, and last date
+//    @Query("SELECT l FROM Leads l JOIN l.users u WHERE " +
+//            "(:assignedTo IS NULL OR u.userId = :assignedTo) " +
+//            "AND (:source IS NULL OR l.source = :source) " +
+//            "AND (:createdDate IS NULL OR CAST(l.createdAt AS date) >= CAST(:createdDate AS date)) " +
+//            "AND (:lastDate IS NULL OR CAST(l.createdAt AS date) <= COALESCE(CAST(:lastDate AS date), CURRENT_DATE))")
+//    Page<Leads> findByFilters(
+//            @Param("accountId" )Long accountId,
+//            @Param("assignedTo") Long assignedTo,
+//            @Param("source") String source,
+//            @Param("createdDate") String createdDate,
+//            @Param("lastDate") String lastDate,
+//            Pageable pageable
+//    );
     @Query("SELECT l FROM Leads l JOIN l.users u WHERE " +
-            "(:assignedTo IS NULL OR u.userId = :assignedTo) " +
+            "l.accountId = :accountId " +
+            "AND (:assignedTo IS NULL OR u.userId = :assignedTo) " +
             "AND (:source IS NULL OR l.source = :source) " +
             "AND (:createdDate IS NULL OR CAST(l.createdAt AS date) >= CAST(:createdDate AS date)) " +
             "AND (:lastDate IS NULL OR CAST(l.createdAt AS date) <= COALESCE(CAST(:lastDate AS date), CURRENT_DATE))")
     Page<Leads> findByFilters(
+            @Param("accountId") Long accountId,
             @Param("assignedTo") Long assignedTo,
             @Param("source") String source,
             @Param("createdDate") String createdDate,
             @Param("lastDate") String lastDate,
             Pageable pageable
     );
+
+    boolean existsByAccountIdAndPrimaryEmailOrAccountIdAndPhoneNo(Long accountId1, String primaryEmail, Long accountId2, String phoneNo);
+
+    List<Leads> findByAccountId(@Param("accountId") Long accountId);
 
 
 }

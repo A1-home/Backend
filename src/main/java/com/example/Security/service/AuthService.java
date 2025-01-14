@@ -102,29 +102,29 @@ public class AuthService {
         String token = jwtUtil.generateToken(email);
 
         // Fetch data using the accountId
-        Long accountId = user.getAccount().getAccountId();
-        String baseUrl = "http://localhost:8080";
-
-        // Fetch budgets
-        List<?> budgets = restTemplate.getForObject(baseUrl + "/budget/find/" + accountId+"/Budget", List.class);
-
-        // Fetch sources
-        List<?> sources = restTemplate.getForObject(baseUrl + "/source/find/" + accountId+"/Source", List.class);
-
-        // Fetch scopes
-        List<?> scopes = restTemplate.getForObject(baseUrl + "/scope/find/" + accountId+"/Scope", List.class);
-
-        // Fetch statuses
-        List<?> statuses = restTemplate.getForObject(baseUrl + "/status/find/" + accountId+"/Status", List.class);
+//        Long accountId = user.getAccount().getAccountId();
+//        String baseUrl = "http://localhost:8080";
+//
+//        // Fetch budgets
+//        List<?> budgets = restTemplate.getForObject(baseUrl + "/budget/find/" + accountId+"/Budget", List.class);
+//
+//        // Fetch sources
+//        List<?> sources = restTemplate.getForObject(baseUrl + "/source/find/" + accountId+"/Source", List.class);
+//
+//        // Fetch scopes
+//        List<?> scopes = restTemplate.getForObject(baseUrl + "/scope/find/" + accountId+"/Scope", List.class);
+//
+//        // Fetch statuses
+//        List<?> statuses = restTemplate.getForObject(baseUrl + "/status/find/" + accountId+"/Status", List.class);
 
         // Prepare the response map
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
         response.put("user", user);
-        response.put("budgets", budgets);
-        response.put("sources", sources);
-        response.put("scopes", scopes);
-        response.put("statuses", statuses);
+//        response.put("budgets", budgets);
+//        response.put("sources", sources);
+//        response.put("scopes", scopes);
+//        response.put("statuses", statuses);
 
         // Return the response with HTTP 200 status
         return ResponseEntity.ok(response);

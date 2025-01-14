@@ -1,12 +1,13 @@
 package com.example.Security.controller;
 
-import com.example.Security.DTO.LeadDTO;
+
 import com.example.Security.entity.Leads;
 import com.example.Security.entity.Users;
 import com.example.Security.repository.LeadsRepository;
 import com.example.Security.repository.UsersRepository;
 import com.example.Security.service.LeadService;
 import com.example.Security.service.PaginationService;
+import jdk.jshell.Snippet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -84,13 +85,13 @@ public class LeadsController {
 //}
 
 
-//
+
+
+//ye wala badhiya h
 //    @PostMapping("/add")
 //    public ResponseEntity<Map<String, Object>> addLead(@RequestBody Map<String, Object> leadData) {
 //        Map<String, Object> responseMap = new HashMap<>();
 //        try {
-////            System.out.println(leadData);
-//
 //            // Extract user details from the incoming request
 //            List<Map<String, Object>> usersList = (List<Map<String, Object>>) leadData.get("users");
 //
@@ -132,6 +133,10 @@ public class LeadsController {
 //            lead.setBudget((String) leadData.get("budget"));
 //            lead.setTags((String) leadData.get("tags"));
 //            lead.setStartDate(startDate);  // Set the parsed startDate
+//
+//            // Extract the accountId from the first user (assuming the first user has the account)
+//            Long accountId = users.get(0).getAccount().getAccountId();  // Get the accountId from the first user
+//            lead.setAccountId(accountId);  // Set the accountId in the lead
 //
 //            // Set the users list in the lead
 //            lead.setUsers(new ArrayList<>(users));
@@ -207,11 +212,23 @@ public class LeadsController {
             lead.setAltPhoneNo((String) leadData.get("altPhoneNo"));
             lead.setBudget((String) leadData.get("budget"));
             lead.setTags((String) leadData.get("tags"));
-            lead.setStartDate(startDate);  // Set the parsed startDate
+            lead.setStartDate(startDate); // Set the parsed startDate
 
             // Extract the accountId from the first user (assuming the first user has the account)
-            Long accountId = users.get(0).getAccount().getAccountId();  // Get the accountId from the first user
-            lead.setAccountId(accountId);  // Set the accountId in the lead
+            Long accountId = users.get(0).getAccount().getAccountId(); // Get the accountId from the first user
+            lead.setAccountId(accountId); // Set the accountId in the lead
+
+            // Check for duplicates within the same accountId
+            // Check if the email or phone number exists for the same accountId
+            boolean isDuplicate = leadsRepository.existsByAccountIdAndPrimaryEmailOrAccountIdAndPhoneNo(
+                    accountId, lead.getPrimaryEmail(), accountId, lead.getPhoneNo()
+            );
+
+            if (isDuplicate) {
+                // Mark as duplicate by setting the tag "D"
+                lead.setTags("Duplicate");
+            }
+
 
             // Set the users list in the lead
             lead.setUsers(new ArrayList<>(users));
@@ -255,7 +272,7 @@ public class LeadsController {
             String userName = requestData.get("userName").toString();
             String remarks = requestData.get("remarks").toString();
 
-            System.out.println(userId);
+//            System.out.println(userId);
 
             // Fetch the lead from the database
             Optional<Leads> leadOptional = leadsRepository.findById(leadId);
@@ -285,7 +302,7 @@ public class LeadsController {
 
             // Update the lead's remarks and save it
             lead.setRemarks(currentRemarks);
-            System.out.println(currentRemarks);
+//            System.out.println(currentRemarks);
             leadsRepository.save(lead);
 
             return "Remark added successfully!";
@@ -341,7 +358,11 @@ public class LeadsController {
     @PostMapping("/filter")
     public ResponseEntity<Map<String, Object>> filterLeads(@RequestBody Map<String, Object> filters) {
         Long assignedTo = null;
-
+        Long accountId=null;
+//        System.out.println(filters);
+        if (filters.get("accountId") != null) {
+            accountId = ((Number) filters.get("accountId")).longValue();
+        }
         // Ensure that assignedTo is parsed as a Long
         if (filters.get("assignedTo") != null) {
             try {
@@ -355,10 +376,10 @@ public class LeadsController {
         String createdDate = (String) filters.getOrDefault("createdDate", null);
         String lastDate = filters.get("lastDate") != null ? (String) filters.get("lastDate") : null;
         int page = (Integer) filters.getOrDefault("page", 0);
-        int size = (Integer) filters.getOrDefault("size", 10);
+        int size = (Integer) filters.getOrDefault("size", 8);
 
         // Call PaginationService to get the filtered leads with pagination
-        Map<String, Object> response = paginationService.getPaginatedLeads(assignedTo, source, createdDate, lastDate, page, size);
+        Map<String, Object> response = paginationService.getPaginatedLeads(accountId,assignedTo, source, createdDate, lastDate, page, size);
 
         return ResponseEntity.ok(response);
     }
@@ -411,31 +432,26 @@ public class LeadsController {
 
 
 
-    @GetMapping("/findAll")
-    public ResponseEntity<?> findAllLeads(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
-        try {
-            // Call the service to get paginated data
-            Map<String, Object> response = paginationService.getPaginatedLeads(page, size);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    aage se account Id bhi lenge leads find karne ke liye
+
+//
+//    @GetMapping("/findAll")
+//    public ResponseEntity<?> findAllLeads(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "8") int size) {
+//        try {
+//            // Call the service to get paginated data
+//            Map<String, Object> response = paginationService.getPaginatedLeads(page, size);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 
-    @GetMapping("/LeadWithRemarks/{leadId}")
-    public ResponseEntity<?> findLeadwithRemarks(@PathVariable("leadId") Long leadId) {
-        try {
-            LeadDTO leadDTO = leadService.findLeadById(leadId);
-            return ResponseEntity.ok(leadDTO);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+
 
     @GetMapping("/findById/{leadId}")
     public Optional<Leads> LeadById(@PathVariable("leadId") Long leadId)
@@ -522,119 +538,111 @@ public class LeadsController {
 
 
 
-//    @GetMapping("/searchLeads")
-//    public ResponseEntity<?> searchLeadsByFlexibleName(
-//            @RequestParam("name") String name,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size) {
-//        try {
-//            // Search leads by flexible name
-//            List<Leads> matchingLeads = leadsRepository.searchFlexibleLeadsByName(name);
+
+//@GetMapping("/searchLeads")
+//public ResponseEntity<?> searchLeadsByFlexibleName(
+//        @RequestParam("name") String name,
+//        @RequestParam(defaultValue = "0") int page,
+//        @RequestParam(defaultValue = "8") int size) {
+//    try {
+//        // Call the service method for paginated search
+//        Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(name, page, size);
 //
-//            if (matchingLeads.isEmpty()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given name.");
-//            }
-//
-//            int startIndex = page * size;
-//            int endIndex = Math.min(startIndex + size, matchingLeads.size());
-//
-//            if (startIndex >= matchingLeads.size()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Page out of range.");
-//            }
-//
-//            // Create a sublist for the current page
-//            List<Leads> paginatedLeads = matchingLeads.subList(startIndex, endIndex);
-//
-//            // Build the response
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("totalItems", matchingLeads.size());
-//            response.put("leads", paginatedLeads);
-//            response.put("totalPages", (int) Math.ceil((double) matchingLeads.size() / size));
-//            response.put("currentPage", page);
-//
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
+//        // Check if results are found
+//        if (response.get("leads") == null || ((List<Leads>) response.get("leads")).isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given criteria.");
 //        }
+//
+//        // Return the paginated response
+//        return ResponseEntity.ok(response);
+//
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
 //    }
-
-//    @GetMapping("/searchLeads")
-//    public ResponseEntity<?> searchLeadsByFlexibleName(
-//            @RequestParam("name") String name,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "8") int size) {
-//        try {
-//            // Search leads by flexible name, phone number, or user name
-//            List<Leads> matchingLeads = leadsRepository.searchFlexibleLeadsByName(name);
+//}
 //
-//            if (matchingLeads.isEmpty()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given criteria.");
-//            }
-//
-//            int startIndex = page * size;
-//            int endIndex = Math.min(startIndex + size, matchingLeads.size());
-//
-//            if (startIndex >= matchingLeads.size()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Page out of range.");
-//            }
-//
-//            // Create a sublist for the current page
-//            List<Leads> paginatedLeads = matchingLeads.subList(startIndex, endIndex);
-//
-//            // Build the response
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("totalItems", matchingLeads.size());
-//            response.put("leads", paginatedLeads);
-//            response.put("totalPages", (int) Math.ceil((double) matchingLeads.size() / size));
-//            response.put("currentPage", page);
-//
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
-//        }
-//    }
 
+    @GetMapping("/searchLeads")
+    public ResponseEntity<?> searchLeadsByFlexibleName(
+            @RequestParam("name") String name,
 
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        try {
+            // Call the service method for paginated search
+            Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(name, page, size);
 
+            // Check if results are found
+            if (response.get("leads") == null || ((List<Leads>) response.get("leads")).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given criteria.");
+            }
 
-@GetMapping("/searchLeads")
-public ResponseEntity<?> searchLeadsByFlexibleName(
-        @RequestParam("name") String name,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "8") int size) {
-    try {
-        // Call the service method for paginated search
-        Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(name, page, size);
+            // Return the paginated response
+            return ResponseEntity.ok(response);
 
-        // Check if results are found
-        if (response.get("leads") == null || ((List<Leads>) response.get("leads")).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given criteria.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
+        }
+    }
+
+    @PostMapping("/assignUsers")
+    public ResponseEntity<String> assignLeads(@RequestBody List<Integer> usersIds, @RequestParam Integer leadId) {
+        // Retrieve the lead by leadId
+        Leads lead = leadsRepository.findById(Long.valueOf(leadId))
+                .orElseThrow(() -> new RuntimeException("Lead not found with ID: " + leadId));
+
+        // Fetch all users by their IDs
+        List<Users> newUsers = (List<Users>) usersRepository.findAllById(usersIds);
+
+        if (newUsers.isEmpty()) {
+            return ResponseEntity.badRequest().body("No users found for the provided IDs.");
         }
 
-        // Return the paginated response
-        return ResponseEntity.ok(response);
+        // Get the existing users of the lead
+        List<Users> existingUsers = lead.getUsers();
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
+        if (existingUsers == null) {
+            existingUsers = new ArrayList<>();
+        }
+
+        // Add new users to the existing ones without duplicating
+        for (Users user : newUsers) {
+            if (!existingUsers.contains(user)) {
+                existingUsers.add(user);
+            }
+        }
+
+        // Update the lead with the combined users list
+        lead.setUsers(existingUsers);
+
+        // Set the relationship in both directions
+        for (Users user : newUsers) {
+            if (user.getLeads() == null) {
+                user.setLeads(new ArrayList<>());
+            }
+            if (!user.getLeads().contains(lead)) {
+                user.getLeads().add(lead);
+            }
+        }
+
+        // Save the lead and users in the database
+        leadsRepository.save(lead);
+        usersRepository.saveAll(newUsers);
+
+        return ResponseEntity.ok("Users successfully assigned to the lead.");
     }
-}
-//
 
 
 
-//    @GetMapping
-//    public List<Leads> filteredLeads(@RequestBody Map<String, String> request)
-//    {
-//
-//
-//    }
-
-
-
-
+    @PatchMapping("/updateLeads/{leadId}")
+    public ResponseEntity<Leads> updateLeadDetails(
+            @PathVariable Long leadId,
+            @RequestBody Map<String, String> updates) {
+        Leads updatedLead = leadService.updateLeadDetails(leadId, updates);
+        return ResponseEntity.ok(updatedLead);
+    }
 
 
 

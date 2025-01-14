@@ -134,4 +134,11 @@ public class Users {
         this.leads = leads;
     }
 
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
 }

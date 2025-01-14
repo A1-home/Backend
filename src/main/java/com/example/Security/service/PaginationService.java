@@ -24,7 +24,7 @@ public class PaginationService {
 
 
     // Method to get paginated leads with filters
-    public Map<String, Object> getPaginatedLeads(Long assignedTo, String source, String createdDate, String lastDate, int page, int size) {
+    public Map<String, Object> getPaginatedLeads(Long accountId,Long assignedTo, String source, String createdDate, String lastDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         // If lastDate is not provided, set it to today's date
@@ -37,23 +37,23 @@ public class PaginationService {
 
         // If both assignedTo and source are provided
         if (assignedTo != null && source != null && createdDate == null) {
-            leadsPage = leadsRepository.findByAssignedToAndSource(assignedTo, source, pageable);
+            leadsPage = leadsRepository.findByAssignedToAndSource(accountId,assignedTo, source, pageable);
         }
         // If only assignedTo is provided
         else if (assignedTo != null && source == null && createdDate == null) {
-            leadsPage = leadsRepository.findByAssignedTo(assignedTo, pageable);
+            leadsPage = leadsRepository.findByAssignedTo(accountId,assignedTo, pageable);
         }
         // If only source is provided
         else if (source != null && assignedTo == null && createdDate == null) {
-            leadsPage = leadsRepository.findBySource(source, pageable);
+            leadsPage = leadsRepository.findBySource(accountId,source, pageable);
         }
         // If createdDate and lastDate are provided
         else if (createdDate != null && lastDate != null && assignedTo == null && source == null) {
-            leadsPage = leadsRepository.findByCreatedDateAndLastDate(createdDate, lastDate, pageable);
+            leadsPage = leadsRepository.findByCreatedDateAndLastDate(accountId,createdDate, lastDate, pageable);
         }
         // Default case for all filters
         else {
-            leadsPage = leadsRepository.findByFilters(assignedTo, source, createdDate, lastDate, pageable);
+            leadsPage = leadsRepository.findByFilters(accountId,assignedTo, source, createdDate, lastDate, pageable);
         }
 
         // Prepare the response for pagination
@@ -62,33 +62,6 @@ public class PaginationService {
 
 
 
-//    private Map<String, Object> preparePaginationResponse(Page<Leads> leadsPage) {
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("leads", leadsPage.getContent());
-//        response.put("currentPage", leadsPage.getNumber());
-//        response.put("totalItems", leadsPage.getTotalElements());
-//        response.put("totalPages", leadsPage.getTotalPages());
-//        return response;
-//    }
-
-
-//    public Map<String, Object> getPaginatedLeadsByAssignedTo(Long assignedTo, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Leads> leadsPage = leadsRepository.findByAssignedTo(assignedTo, pageable);
-//        return preparePaginationResponse(leadsPage);
-//    }
-//
-//    public Map<String, Object> getPaginatedLeadsBySource(String source, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Leads> leadsPage = leadsRepository.findBySource(source, pageable);
-//        return preparePaginationResponse(leadsPage);
-//    }
-//
-//    public Map<String, Object> getPaginatedLeadsByCreatedDate(String createdDate, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Leads> leadsPage = leadsRepository.findByCreatedDate(createdDate, pageable);
-//        return preparePaginationResponse(leadsPage);
-//    }
 
     public Map<String, Object> getPaginatedLeadsBySearchName(String name, int page, int size) {
         // Create a Pageable object

@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -108,10 +105,23 @@ public class UsersController {
 
 
 
+
+    // account id bhi chihiye hoga aage
+
     @GetMapping("/getAll")
     public List<Users> getAllUsers()
     {
         return (List<Users>) usersRepository.findAll();
+    }
+//
+
+
+
+    @GetMapping("/getAllUsers/{accountId}")
+    public List<Users> findAllUsers(@PathVariable("accountId") Long accountId) {
+        List<Users> users = usersRepository.findByAccountId(accountId);
+  return  users;
+
     }
 
 
@@ -159,6 +169,35 @@ public class UsersController {
 
 
 
+    @PutMapping("/changeActiveStatus/{userId}/{accountId}")
+    public ResponseEntity<Map<String, String>> changeStatusOfUser(@PathVariable Long userId, @PathVariable Long accountId) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            // Retrieve the user by userId and accountId
+            Users user = usersRepository.findByUserIdAndAccount_AccountId(userId, accountId)
+                    .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId + " and accountId: " + accountId));
+
+            // Toggle the isActive status
+            user.setActive(!user.getActive());
+
+            // Save the updated user
+            usersRepository.save(user);
+
+            // Prepare the response
+            response.put("status", "success");
+            response.put("message", "User active status updated successfully");
+            response.put("isActive", user.getActive().toString());
+            return ResponseEntity.ok(response);
+        } catch (NoSuchElementException e) {
+            response.put("status", "failure");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("status", "failure");
+            response.put("message", "An error occurred while updating user status");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 
 

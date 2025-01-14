@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
 
 @Repository
 public interface UsersRepository extends CrudRepository<Users,Long> {
@@ -20,7 +21,15 @@ public interface UsersRepository extends CrudRepository<Users,Long> {
     @Query("SELECT u FROM Users u WHERE u.isActive = true AND u.account.accountId = :accountId")
     List<Users> findActiveUsersList(@Param("accountId") Long accountId);
 
-    @Query("SELECT u FROM Users u WHERE u.isActive = false AND u.account.accountId = :accountId")
+    @Query("SELECT u FROM Users u WHERE u.account.accountId = :accountId AND u.isActive = false ")
     List<Users> findDeActiveUsersList(@Param("accountId") Long accountId);
 
+
+    @Query("SELECT u FROM Users u WHERE u.id IN :ids")
+    List<Users> findAllById(@Param("ids") List<Integer> ids);
+
+    Optional<Users> findByUserIdAndAccount_AccountId(Long userId, Long accountId);
+
+    @Query("SELECT u FROM Users u WHERE u.account.accountId = :accountId")
+    List<Users> findByAccountId(@Param("accountId") Long accountId);
 }

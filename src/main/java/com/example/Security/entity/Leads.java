@@ -1,10 +1,11 @@
 package com.example.Security.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.w3c.dom.Text;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -54,11 +55,14 @@ public class Leads {
 
     // Remarks stored as JSON (Employee ID, remark, timestamp)
 //    @Column(columnDefinition = "json")
+
     private String remarks;  // Remarks (as JSON string)
 
     // AssignedTo stored as JSON (array of user IDs or usernames)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date();  // Created At (current timestamp)
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date createdAt = new Date();  // Created At (current timestamp)
+    @Temporal(TemporalType.DATE)  // This stores only the date, not the time
+    private LocalDate createdAt = LocalDate.now();
 
 //    @JsonBackReference
     @JsonManagedReference
@@ -292,11 +296,11 @@ public class Leads {
         this.remarks = remarks;
     }
 
-    public Date getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
