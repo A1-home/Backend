@@ -435,19 +435,20 @@ public class LeadsController {
 //    aage se account Id bhi lenge leads find karne ke liye
 
 //
-//    @GetMapping("/findAll")
-//    public ResponseEntity<?> findAllLeads(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "8") int size) {
-//        try {
-//            // Call the service to get paginated data
-//            Map<String, Object> response = paginationService.getPaginatedLeads(page, size);
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @GetMapping("/findAll/{accountId}")
+    public ResponseEntity<?> findAllLeads(
+            @PathVariable("accountId") Long accountId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        try {
+            // Call the service to get paginated data
+            Map<String, Object> response = paginationService.getPaginatedLeads(accountId,page, size);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 
@@ -565,13 +566,13 @@ public class LeadsController {
 
     @GetMapping("/searchLeads")
     public ResponseEntity<?> searchLeadsByFlexibleName(
+            @RequestParam("accountId") Long accountId, // Include accountId
             @RequestParam("name") String name,
-
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size) {
         try {
             // Call the service method for paginated search
-            Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(name, page, size);
+            Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(accountId, name, page, size);
 
             // Check if results are found
             if (response.get("leads") == null || ((List<Leads>) response.get("leads")).isEmpty()) {
@@ -586,6 +587,7 @@ public class LeadsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
         }
     }
+
 
     @PostMapping("/assignUsers")
     public ResponseEntity<String> assignLeads(@RequestBody List<Integer> usersIds, @RequestParam Integer leadId) {

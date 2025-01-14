@@ -39,23 +39,56 @@ public class UsersController {
         this.accountRepository = accountRepository;
     }
 
+//    @PostMapping("/add")
+//    public ResponseEntity<Users> addUser(@RequestBody Users user) {
+//        // Fetch the Account object based on accountId from the request
+//        Account account = accountRepository.findById(user.getAccount().getAccountId())
+//                .orElseThrow(() -> new RuntimeException("Account not found"));
+//
+//        // Set the fetched Account object on the user
+//        user.setAccount(account);
+//        String encodedPassword=authService.EncodeUsersPassword(user.getPassword());
+//        user.setPassword(encodedPassword);
+//        // Save the user to the database
+//        Users savedUser = usersRepository.save(user);
+//
+//        // Return the saved user in the response
+//        return ResponseEntity.ok(savedUser);
+//    }
+
     @PostMapping("/add")
-    public ResponseEntity<Users> addUser(@RequestBody Users user) {
-        // Fetch the Account object based on accountId from the request
-        Account account = accountRepository.findById(user.getAccount().getAccountId())
+    public ResponseEntity<Users> addUser(@RequestBody Map<String, Object> userData) {
+        // Extract data from the request body map
+        String userName = (String) userData.get("userName");
+        String email = (String) userData.get("email");
+        String phoneNumber = (String) userData.get("phoneNumber");
+        String role = (String) userData.get("role");
+        String password = (String) userData.get("password");
+
+        // Extract account ID and fetch the associated Account entity
+        Map<String, Object> accountData = (Map<String, Object>) userData.get("account");
+        Long accountId = Long.valueOf((Integer) accountData.get("accountId"));
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        // Set the fetched Account object on the user
+        // Create a new Users object and set its properties
+        Users user = new Users();
+        user.setUserName(userName);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setRole(role);
         user.setAccount(account);
-        String encodedPassword=authService.EncodeUsersPassword(user.getPassword());
+
+        // Encode the password and set it
+        String encodedPassword = authService.EncodeUsersPassword(password);
         user.setPassword(encodedPassword);
+
         // Save the user to the database
         Users savedUser = usersRepository.save(user);
 
-        // Return the saved user in the response
+        // Return the saved user as the response
         return ResponseEntity.ok(savedUser);
     }
-
 
 
 

@@ -25,10 +25,12 @@ public interface LeadsRepository extends JpaRepository<Leads,Long> {
 
     @Query("SELECT l FROM Leads l " +
             "LEFT JOIN l.users u " +
-            "WHERE LOWER(l.clientName) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "WHERE l.accountId = :accountId " +
+            "AND (LOWER(l.clientName) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(l.phoneNo) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(u.userName) LIKE LOWER(CONCAT('%', :name, '%'))")
-    Page<Leads> searchFlexibleLeadsByName(@Param("name") String name, Pageable pageable);
+            "OR LOWER(u.userName) LIKE LOWER(CONCAT('%', :name, '%')))")
+    Page<Leads> searchFlexibleLeadsByName(@Param("accountId") Long accountId, @Param("name") String name, Pageable pageable);
+
 
 
 
@@ -243,5 +245,8 @@ public interface LeadsRepository extends JpaRepository<Leads,Long> {
 
     List<Leads> findByAccountId(@Param("accountId") Long accountId);
 
+//    @Query("SELECT l FROM leads l WHERE l.accountId = :accountId")
+@Query("SELECT l FROM Leads l WHERE l.accountId = :accountId")
+Page<Leads> LeadsByAccountId(@Param("accountId") Long accountId, Pageable pageable);
 
 }

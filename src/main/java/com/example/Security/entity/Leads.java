@@ -1,5 +1,6 @@
 package com.example.Security.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,7 +57,11 @@ public class Leads {
     // Remarks stored as JSON (Employee ID, remark, timestamp)
 //    @Column(columnDefinition = "json")
 
-    private String remarks;  // Remarks (as JSON string)
+
+
+    @Column(length = 2000)
+    private String remarks;
+// Remarks (as JSON string)
 
     // AssignedTo stored as JSON (array of user IDs or usernames)
 //    @Temporal(TemporalType.TIMESTAMP)
@@ -66,6 +71,7 @@ public class Leads {
 
 //    @JsonBackReference
     @JsonManagedReference
+//    @JsonBackReference
     @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Users> users;
 

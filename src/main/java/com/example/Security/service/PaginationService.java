@@ -63,12 +63,12 @@ public class PaginationService {
 
 
 
-    public Map<String, Object> getPaginatedLeadsBySearchName(String name, int page, int size) {
+    public Map<String, Object> getPaginatedLeadsBySearchName(Long accountId,String name, int page, int size) {
         // Create a Pageable object
         Pageable pageable = PageRequest.of(page, size);
 
         // Fetch paginated search results
-        Page<Leads> leadsPage = leadsRepository.searchFlexibleLeadsByName(name, pageable);
+        Page<Leads> leadsPage = leadsRepository.searchFlexibleLeadsByName(accountId,name, pageable);
 
         // Prepare and return the response
         return preparePaginationResponse(leadsPage);
@@ -84,12 +84,12 @@ public class PaginationService {
         return response;
     }
 
-    public Map<String, Object> getPaginatedLeads(int page, int size) {
+    public Map<String, Object> getPaginatedLeads(Long accountId,int page, int size) {
         // Create a Pageable object
         Pageable pageable = PageRequest.of(page, size);
 
         // Fetch paginated results
-        Page<Leads> leadsPage = leadsRepository.findAll(pageable);
+        Page<Leads> leadsPage = leadsRepository.LeadsByAccountId(accountId,pageable);
 
         // Prepare the response map
         Map<String, Object> response = new HashMap<>();
