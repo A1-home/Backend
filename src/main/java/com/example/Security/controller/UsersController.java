@@ -63,8 +63,9 @@ public class UsersController {
         String email = (String) userData.get("email");
         String phoneNumber = (String) userData.get("phoneNumber");
         String role = (String) userData.get("role");
-        String password = (String) userData.get("password");
+//        String password = (String) userData.get("password");
 
+        String password="123456";
         // Extract account ID and fetch the associated Account entity
         Map<String, Object> accountData = (Map<String, Object>) userData.get("account");
         Long accountId = Long.valueOf((Integer) accountData.get("accountId"));
