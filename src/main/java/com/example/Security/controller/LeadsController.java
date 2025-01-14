@@ -77,95 +77,6 @@ public class LeadsController {
         }
     }
 
-    //To check Only
-//@GetMapping("/findLeads")
-//public List<Leads> get()
-//{
-//    return leadsRepository.findAll();
-//}
-
-
-
-
-//ye wala badhiya h
-//    @PostMapping("/add")
-//    public ResponseEntity<Map<String, Object>> addLead(@RequestBody Map<String, Object> leadData) {
-//        Map<String, Object> responseMap = new HashMap<>();
-//        try {
-//            // Extract user details from the incoming request
-//            List<Map<String, Object>> usersList = (List<Map<String, Object>>) leadData.get("users");
-//
-//            // Retrieve users from the database based on the userIds provided in the users list
-//            List<Users> users = usersList.stream()
-//                    .map(userMap -> {
-//                        // Convert userId to Long (since it's provided as String in the request)
-//                        Long userId = Long.parseLong(userMap.get("userId").toString());
-//                        return usersRepository.findById(userId).orElse(null);
-//                    })
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toList());
-//
-//            // If no users are found, return an error response
-//            if (users.isEmpty()) {
-//                responseMap.put("status", "failure");
-//                responseMap.put("message", "Users not found");
-//                return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
-//            }
-//
-//            // Parse the startDate (String) into Date
-//            String startDateStr = (String) leadData.get("startDate");
-//            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
-//
-//            // Create the Lead entity based on the provided data
-//            Leads lead = new Leads();
-//            lead.setCreatedBy((String) leadData.get("createdBy"));
-//            lead.setClientName((String) leadData.get("clientName"));
-//            lead.setAltClientName((String) leadData.get("altClientName"));
-//            lead.setPhoneNo((String) leadData.get("phoneNo"));
-//            lead.setPrimaryEmail((String) leadData.get("primaryEmail"));
-//            lead.setProjectName((String) leadData.get("projectName"));
-//            lead.setDescription((String) leadData.get("description"));
-//            lead.setSource((String) leadData.get("source"));
-//            lead.setStatus((String) leadData.get("status"));
-//            lead.setScope((String) leadData.get("scope"));
-//            lead.setAltEmail((String) leadData.get("altEmail"));
-//            lead.setAltPhoneNo((String) leadData.get("altPhoneNo"));
-//            lead.setBudget((String) leadData.get("budget"));
-//            lead.setTags((String) leadData.get("tags"));
-//            lead.setStartDate(startDate);  // Set the parsed startDate
-//
-//            // Extract the accountId from the first user (assuming the first user has the account)
-//            Long accountId = users.get(0).getAccount().getAccountId();  // Get the accountId from the first user
-//            lead.setAccountId(accountId);  // Set the accountId in the lead
-//
-//            // Set the users list in the lead
-//            lead.setUsers(new ArrayList<>(users));
-//
-//            // Set the relationship in both directions (Users -> Leads and Leads -> Users)
-//            for (Users user : users) {
-//                if (user.getLeads() == null) {
-//                    user.setLeads(new ArrayList<>());
-//                }
-//                user.getLeads().add(lead);
-//            }
-//
-//            // Save the lead and users in the database
-//            leadsRepository.save(lead);
-//            usersRepository.saveAll(users);
-//
-//            // Prepare success response
-//            responseMap.put("status", "success");
-//            responseMap.put("message", "Lead added successfully");
-//            responseMap.put("lead", lead);
-//
-//            return new ResponseEntity<>(responseMap, HttpStatus.CREATED);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            responseMap.put("status", "failure");
-//            responseMap.put("message", "Error occurred while adding lead");
-//            return new ResponseEntity<>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
 
     @PostMapping("/add")
@@ -312,47 +223,6 @@ public class LeadsController {
         }
     }
 
-
-
-//
-//
-//    @GetMapping("/filter/assigned-to")
-//    public ResponseEntity<Map<String, Object>> filterByAssignedTo(
-//            @RequestParam(required = false) Long assignedTo,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "8") int size) {
-//        Map<String, Object> response = paginationService.getPaginatedLeadsByAssignedTo(assignedTo, page, size);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @GetMapping("/filter/source")
-//    public ResponseEntity<Map<String, Object>> filterBySource(
-//            @RequestParam(required = false) String source,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "8") int size) {
-//        Map<String, Object> response = paginationService.getPaginatedLeadsBySource(source, page, size);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @GetMapping("/filter/created-date")
-//    public ResponseEntity<Map<String, Object>> filterByCreatedDate(
-//            @RequestParam String createdDate,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "8") int size) {
-//        // Fetch the paginated data from the service
-//        Map<String, Object> response = paginationService.getPaginatedLeadsByCreatedDate(createdDate, page, size);
-//
-//        // Check if there are no leads
-//        if (!response.containsKey("leads") || ((List<?>) response.get("leads")).isEmpty()) {
-//            // Return an empty response with 200 status
-//            response.put("totalItems", 0);
-//            response.put("leads", Collections.emptyList());
-//            response.put("totalPages", 0);
-//            response.put("currentPage", page);
-//        }
-//
-//        return ResponseEntity.ok(response);
-//    }
 
 
     @PostMapping("/filter")
@@ -539,31 +409,6 @@ public class LeadsController {
 
 
 
-
-//@GetMapping("/searchLeads")
-//public ResponseEntity<?> searchLeadsByFlexibleName(
-//        @RequestParam("name") String name,
-//        @RequestParam(defaultValue = "0") int page,
-//        @RequestParam(defaultValue = "8") int size) {
-//    try {
-//        // Call the service method for paginated search
-//        Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(name, page, size);
-//
-//        // Check if results are found
-//        if (response.get("leads") == null || ((List<Leads>) response.get("leads")).isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No leads found with the given criteria.");
-//        }
-//
-//        // Return the paginated response
-//        return ResponseEntity.ok(response);
-//
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching leads.");
-//    }
-//}
-//
-
     @GetMapping("/searchLeads")
     public ResponseEntity<?> searchLeadsByFlexibleName(
             @RequestParam("accountId") Long accountId, // Include accountId
@@ -590,50 +435,66 @@ public class LeadsController {
 
 
     @PostMapping("/assignUsers")
-    public ResponseEntity<String> assignLeads(@RequestBody List<Integer> usersIds, @RequestParam Integer leadId) {
+    public ResponseEntity<String> manageLeadUsers(
+            @RequestBody Map<String, Object> userUpdates,
+            @RequestParam Integer leadId) {
         // Retrieve the lead by leadId
         Leads lead = leadsRepository.findById(Long.valueOf(leadId))
                 .orElseThrow(() -> new RuntimeException("Lead not found with ID: " + leadId));
 
-        // Fetch all users by their IDs
-        List<Users> newUsers = (List<Users>) usersRepository.findAllById(usersIds);
+        // Process assigned users
+        if (userUpdates.containsKey("assignedUsers")) {
+            List<Integer> assignedUserIds = (List<Integer>) userUpdates.get("assignedUsers");
+            List<Users> usersToAssign = (List<Users>) usersRepository.findAllById(assignedUserIds);
 
-        if (newUsers.isEmpty()) {
-            return ResponseEntity.badRequest().body("No users found for the provided IDs.");
-        }
+            if (!usersToAssign.isEmpty()) {
+                List<Users> existingUsers = lead.getUsers();
+                if (existingUsers == null) {
+                    existingUsers = new ArrayList<>();
+                }
 
-        // Get the existing users of the lead
-        List<Users> existingUsers = lead.getUsers();
+                for (Users user : usersToAssign) {
+                    if (!existingUsers.contains(user)) {
+                        existingUsers.add(user);
+                    }
+                    if (user.getLeads() == null) {
+                        user.setLeads(new ArrayList<>());
+                    }
+                    if (!user.getLeads().contains(lead)) {
+                        user.getLeads().add(lead);
+                    }
+                }
 
-        if (existingUsers == null) {
-            existingUsers = new ArrayList<>();
-        }
-
-        // Add new users to the existing ones without duplicating
-        for (Users user : newUsers) {
-            if (!existingUsers.contains(user)) {
-                existingUsers.add(user);
+                lead.setUsers(existingUsers);
+                usersRepository.saveAll(usersToAssign);
             }
         }
 
-        // Update the lead with the combined users list
-        lead.setUsers(existingUsers);
+        // Process removed users
+        if (userUpdates.containsKey("removedUsers")) {
+            List<Integer> removedUserIds = (List<Integer>) userUpdates.get("removedUsers");
+            List<Users> usersToRemove = (List<Users>) usersRepository.findAllById(removedUserIds);
 
-        // Set the relationship in both directions
-        for (Users user : newUsers) {
-            if (user.getLeads() == null) {
-                user.setLeads(new ArrayList<>());
-            }
-            if (!user.getLeads().contains(lead)) {
-                user.getLeads().add(lead);
+            if (!usersToRemove.isEmpty()) {
+                List<Users> existingUsers = lead.getUsers();
+                if (existingUsers != null) {
+                    existingUsers.removeAll(usersToRemove);
+                    for (Users user : usersToRemove) {
+                        if (user.getLeads() != null) {
+                            user.getLeads().remove(lead);
+                        }
+                    }
+                }
+
+                lead.setUsers(existingUsers);
+                usersRepository.saveAll(usersToRemove);
             }
         }
 
-        // Save the lead and users in the database
+        // Save the lead
         leadsRepository.save(lead);
-        usersRepository.saveAll(newUsers);
 
-        return ResponseEntity.ok("Users successfully assigned to the lead.");
+        return ResponseEntity.ok("User assignments updated successfully.");
     }
 
 
@@ -641,8 +502,8 @@ public class LeadsController {
     @PatchMapping("/updateLeads/{leadId}")
     public ResponseEntity<Leads> updateLeadDetails(
             @PathVariable Long leadId,
-            @RequestBody Map<String, String> updates) {
-        Leads updatedLead = leadService.updateLeadDetails(leadId, updates);
+            @RequestBody Map<String, Object> updates) {
+        Leads updatedLead = leadService.updateLeadDetails(updates,leadId);
         return ResponseEntity.ok(updatedLead);
     }
 

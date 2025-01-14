@@ -169,54 +169,219 @@ public class LeadService {
     }
 
 
-    public Leads updateLeadDetails(Long leadId, Map<String, String> updates) {
+//    public Leads updateLeadDetails( Map<String, Object> updates,Long leadId) {
+//        // Fetch the lead by ID or throw an exception if not found
+//        Leads lead = leadsRepository.findById(leadId)
+//                .orElseThrow(() -> new RuntimeException("Lead not found with ID: " + leadId));
+//
+//        updates.forEach((key, value) -> {
+//            switch (key) {
+//                case "clientName":
+//                    lead.setClientName((String) value);
+//                    break;
+//                case "altClientName":
+//                    lead.setAltClientName((String) value);
+//                    break;
+//                case "phoneNo":
+//                    lead.setPhoneNo((String) value);
+//                    break;
+//                case "primaryEmail":
+//                    lead.setPrimaryEmail((String) value);
+//                    break;
+//                case "projectName":
+//                    lead.setProjectName((String) value);
+//                    break;
+//                case "description":
+//                    lead.setDescription((String) value);
+//                    break;
+//                case "scope":
+//                    lead.setScope((String) value);
+//                    break;
+//                case "source":
+//                    lead.setSource((String) value);
+//                    break;
+//                case "status":
+//                    lead.setStatus((String) value);
+//                    break;
+//                case "altEmail":
+//                    lead.setAltEmail((String) value);
+//                    break;
+//                case "altPhoneNo":
+//                    lead.setAltPhoneNo((String) value);
+//                    break;
+//                case "users":
+//                    // Ensure the value is a List of user IDs
+//                    List<Long> userIds = (List<Long>) value;
+//
+//                    // Fetch all users by their IDs
+//                    List<Users> newUsers = (List<Users>) usersRepository.findAllById(userIds);
+//
+//                    if (newUsers.isEmpty()) {
+//                        throw new IllegalArgumentException("No users found for the provided IDs.");
+//                    }
+//
+//                    // Get the existing users of the lead
+//                    List<Users> existingUsers = lead.getUsers();
+//
+//                    if (existingUsers == null) {
+//                        existingUsers = new ArrayList<>();
+//                    }
+//
+//                    // Add new users to the existing ones without duplicating
+//                    for (Users user : newUsers) {
+//                        if (!existingUsers.contains(user)) {
+//                            existingUsers.add(user);
+//                        }
+//                    }
+//
+//                    // Update the lead with the combined users list
+//                    lead.setUsers(existingUsers);
+//
+//                    // Set the relationship in both directions
+//                    for (Users user : newUsers) {
+//                        if (user.getLeads() == null) {
+//                            user.setLeads(new ArrayList<>());
+//                        }
+//                        if (!user.getLeads().contains(lead)) {
+//                            user.getLeads().add(lead);
+//                        }
+//                    }
+//
+//                    // Save the updated users
+//                    usersRepository.saveAll(newUsers);
+//                    break;
+//
+//                default:
+//                    throw new IllegalArgumentException("Invalid field: " + key);
+//            }
+//        });
+//
+//        // Save and return the updated lead
+//        return leadsRepository.save(lead);
+//    }
+
+
+
+    public Leads updateLeadDetails(Map<String, Object> updates, Long leadId) {
+        // Fetch the lead by ID or throw an exception if not found
         Leads lead = leadsRepository.findById(leadId)
                 .orElseThrow(() -> new RuntimeException("Lead not found with ID: " + leadId));
 
         updates.forEach((key, value) -> {
             switch (key) {
                 case "clientName":
-                    lead.setClientName(value);
+                    lead.setClientName((String) value);
                     break;
                 case "altClientName":
-                    lead.setAltClientName(value);
+                    lead.setAltClientName((String) value);
                     break;
                 case "phoneNo":
-                    lead.setPhoneNo(value);
+                    lead.setPhoneNo((String) value);
                     break;
                 case "primaryEmail":
-                    lead.setPrimaryEmail(value);
+                    lead.setPrimaryEmail((String) value);
                     break;
                 case "projectName":
-                    lead.setProjectName(value);
+                    lead.setProjectName((String) value);
                     break;
                 case "description":
-                    lead.setDescription(value);
+                    lead.setDescription((String) value);
                     break;
                 case "scope":
-                    lead.setScope(value);
+                    lead.setScope((String) value);
                     break;
                 case "source":
-                    lead.setSource(value);
+                    lead.setSource((String) value);
                     break;
                 case "status":
-                    lead.setStatus(value);
+                    lead.setStatus((String) value);
                     break;
                 case "altEmail":
-                    lead.setAltEmail(value);
+                    lead.setAltEmail((String) value);
                     break;
                 case "altPhoneNo":
-                    lead.setAltPhoneNo(value);
+                    lead.setAltPhoneNo((String) value);
                     break;
+                case "users":
+                    // Ensure the value is a List of user IDs
+                    List<Long> userIdsToAdd = (List<Long>) value;
+
+                    // Fetch all users by their IDs
+                    List<Users> newUsers = (List<Users>) usersRepository.findAllById(userIdsToAdd);
+
+                    if (newUsers.isEmpty()) {
+                        throw new IllegalArgumentException("No users found for the provided IDs.");
+                    }
+
+                    // Get the existing users of the lead
+                    List<Users> existingUsers = lead.getUsers();
+                    if (existingUsers == null) {
+                        existingUsers = new ArrayList<>();
+                    }
+
+                    // Add new users to the existing ones without duplicating
+                    for (Users user : newUsers) {
+                        if (!existingUsers.contains(user)) {
+                            existingUsers.add(user);
+                        }
+                    }
+
+                    // Update the lead with the combined users list
+                    lead.setUsers(existingUsers);
+
+                    // Set the relationship in both directions
+                    for (Users user : newUsers) {
+                        if (user.getLeads() == null) {
+                            user.setLeads(new ArrayList<>());
+                        }
+                        if (!user.getLeads().contains(lead)) {
+                            user.getLeads().add(lead);
+                        }
+                    }
+
+                    // Save the updated users
+                    usersRepository.saveAll(newUsers);
+                    break;
+
+                case "removeUsers":
+                    // Ensure the value is a List of user IDs
+                    List<Long> userIdsToRemove = (List<Long>) value;
+
+                    // Fetch all users by their IDs
+                    List<Users> usersToRemove = (List<Users>) usersRepository.findAllById(userIdsToRemove);
+
+                    if (usersToRemove.isEmpty()) {
+                        throw new IllegalArgumentException("No users found for the provided IDs.");
+                    }
+
+                    // Remove the users from the lead
+                    List<Users> currentUsers = lead.getUsers();
+                    if (currentUsers != null) {
+                        currentUsers.removeAll(usersToRemove);
+                    }
+
+                    // Update the lead's user list
+                    lead.setUsers(currentUsers);
+
+                    // Remove the lead from the users' leads list
+                    for (Users user : usersToRemove) {
+                        if (user.getLeads() != null) {
+                            user.getLeads().remove(lead);
+                        }
+                    }
+
+                    // Save the updated users
+                    usersRepository.saveAll(usersToRemove);
+                    break;
+
                 default:
                     throw new IllegalArgumentException("Invalid field: " + key);
             }
         });
 
+        // Save and return the updated lead
         return leadsRepository.save(lead);
     }
-
-
 
 
 

@@ -19,17 +19,9 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody Map<String, String> request) {
-        String token = authService.signup(request.get("name"), request.get("email"), request.get("password"));
-        return ResponseEntity.ok(Map.of("token", token));
-    }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        String token = authService.login(request.get("email"), request.get("password"));
-        return ResponseEntity.ok(Map.of("token", token));
-    }
+
+
 
 
 
