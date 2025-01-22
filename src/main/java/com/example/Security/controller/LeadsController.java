@@ -5,29 +5,22 @@ import com.example.Security.entity.Leads;
 import com.example.Security.entity.Users;
 import com.example.Security.repository.LeadsRepository;
 import com.example.Security.repository.UsersRepository;
+import com.example.Security.service.JwtAuthenticationFilter;
+import com.example.Security.service.JwtUtil;
 import com.example.Security.service.LeadService;
 import com.example.Security.service.PaginationService;
-import jdk.jshell.Snippet;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import jdk.internal.jimage.BasicImageReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @CrossOrigin
 @RestController
@@ -39,14 +32,19 @@ public class LeadsController {
     private final LeadService leadService;
     private final UsersRepository usersRepository;
     private final PaginationService paginationService;
+    private final JwtUtil jwtUtil;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
     @Autowired
-    public LeadsController(LeadsRepository leadsRepository, LeadService leadService, UsersRepository usersRepository, PaginationService paginationService) {
+    public LeadsController(LeadsRepository leadsRepository, LeadService leadService, UsersRepository usersRepository, PaginationService paginationService, JwtUtil jwtUtil, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.leadsRepository = leadsRepository;
         this.leadService = leadService;
         this.usersRepository = usersRepository;
         this.paginationService = paginationService;
+        this.jwtUtil = jwtUtil;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
 
@@ -228,31 +226,51 @@ public class LeadsController {
     @PostMapping("/filter")
     public ResponseEntity<Map<String, Object>> filterLeads(@RequestBody Map<String, Object> filters) {
         Long assignedTo = null;
-        Long accountId=null;
-//        System.out.println(filters);
-        if (filters.get("accountId") != null) {
-            accountId = ((Number) filters.get("accountId")).longValue();
-        }
-        // Ensure that assignedTo is parsed as a Long
-        if (filters.get("assignedTo") != null) {
-            try {
-                assignedTo = Long.valueOf(filters.get("assignedTo").toString());
-            } catch (NumberFormatException e) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Invalid assignedTo value. Must be a valid number."));
+        Long accountId = null;
+
+        try {
+            // Extract and validate the accountId
+            if (filters.get("accountId") != null) {
+                accountId = ((Number) filters.get("accountId")).longValue();
             }
+
+            // Extract and validate the assignedTo value
+            if (filters.get("assignedTo") != null) {
+                try {
+                    assignedTo = Long.valueOf(filters.get("assignedTo").toString());
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.badRequest()
+                            .body(Map.of("error", "Invalid assignedTo value. Must be a valid number."));
+                }
+            }
+
+            // Extract optional filters
+            String source = (String) filters.getOrDefault("source", null);
+            String createdDate = (String) filters.getOrDefault("createdDate", null);
+            String lastDate = filters.get("lastDate") != null ? (String) filters.get("lastDate") : null;
+            int page = (Integer) filters.getOrDefault("page", 0);
+            int size = (Integer) filters.getOrDefault("size", 8);
+
+            // Fetch the filtered leads with pagination
+            Map<String, Object> response = paginationService.getPaginatedLeads(accountId, assignedTo, source, createdDate, lastDate, page, size);
+
+            return ResponseEntity.ok(response);
+        } catch (ClassCastException e) {
+            // Handle invalid data types for filters
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Invalid filter data types. Please check the input values."));
+        } catch (IllegalArgumentException e) {
+            // Handle invalid arguments passed to services or methods
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Invalid argument: " + e.getMessage()));
+        } catch (Exception e) {
+            // Handle unexpected errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred while filtering leads.",
+                            "details", e.getMessage()));
         }
-
-        String source = (String) filters.getOrDefault("source", null);
-        String createdDate = (String) filters.getOrDefault("createdDate", null);
-        String lastDate = filters.get("lastDate") != null ? (String) filters.get("lastDate") : null;
-        int page = (Integer) filters.getOrDefault("page", 0);
-        int size = (Integer) filters.getOrDefault("size", 8);
-
-        // Call PaginationService to get the filtered leads with pagination
-        Map<String, Object> response = paginationService.getPaginatedLeads(accountId,assignedTo, source, createdDate, lastDate, page, size);
-
-        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/followup")
     public String followup(@RequestBody Map<String, Object> requestData) {
@@ -261,6 +279,7 @@ public class LeadsController {
             String date = (String) requestData.get("date"); // Date part (yyyy-MM-dd)
             String time = (String) requestData.get("time"); // Time part (HH:mm)
             Long leadId = Long.valueOf(requestData.get("leadId").toString());
+
 
             // Validate and parse the date and time
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -304,22 +323,67 @@ public class LeadsController {
 
 //    aage se account Id bhi lenge leads find karne ke liye
 
-//
+
+//    @GetMapping("/findAll/{accountId}")
+//    public ResponseEntity<?> findAllLeads(
+//            @PathVariable("accountId") Long accountId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "8") int size) {
+//        try {
+//            // Call the service to get paginated data
+//            Map<String, Object> response = paginationService.getPaginatedLeads(accountId,page, size);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
+
+
+
     @GetMapping("/findAll/{accountId}")
-    public ResponseEntity<?> findAllLeads(
+    public ResponseEntity<?> findAllLead(
             @PathVariable("accountId") Long accountId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size) {
         try {
+//            System.out.println("called");
+
+
+            // Use the TokenService to extract user details
+
+            Map<String, Object> userDetails = jwtUtil.extractUserDetails();
+            if (userDetails == null) {
+                return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
+            }
+
+
+
+            // Extract specific user information if needed
+            Long userId = (Long) userDetails.get("userId");
+            String userName = (String) userDetails.get("userName");
+            String email = (String) userDetails.get("email");
+            String role = (String) userDetails.get("role");
+
+//            System.out.println(userDetails);
+
+            // Log or use the extracted details as needed
+            // logger.info("Authenticated User Details: userId={}, userName={}, email={}, role={}", userId, userName, email, role);
+
             // Call the service to get paginated data
-            Map<String, Object> response = paginationService.getPaginatedLeads(accountId,page, size);
+            Map<String, Object> response = paginationService.getPaginatedLeads(accountId, page, size);
+
+            // Add user-related info to the response if needed
+//            response.put("userDetails", userDetails);
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            // logger.error("Error fetching leads", e);
             return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 
@@ -347,7 +411,7 @@ public class LeadsController {
 
             return "Status updated";
         } else {
-            throw new RuntimeException("Lead with ID " + id + " not found");
+            throw new RuntimeException("Lead status not updated");
         }
     }
 
@@ -366,7 +430,7 @@ public class LeadsController {
 
             return "Budget Updated";
         } else {
-            throw new RuntimeException("Lead with ID " + id + " not found");
+            throw new RuntimeException("Lead budget not updated");
         }
     }
 
@@ -384,7 +448,7 @@ public class LeadsController {
 
             return "Scope Updated";
         } else {
-            throw new RuntimeException("Lead with ID " + id + " not found");
+            throw new RuntimeException("Lead scope not updated");
         }
     }
 
@@ -403,7 +467,7 @@ public class LeadsController {
 
             return leads;
         } else {
-            throw new RuntimeException("Lead with ID " + id + " not found");
+            throw new RuntimeException("Lead source not updated");
         }
     }
 
@@ -499,10 +563,11 @@ public class LeadsController {
 
 
 
-    @PatchMapping("/updateLeads/{leadId}")
+    @PutMapping("/updateLeads/{leadId}")
     public ResponseEntity<Leads> updateLeadDetails(
             @PathVariable Long leadId,
             @RequestBody Map<String, Object> updates) {
+
         Leads updatedLead = leadService.updateLeadDetails(updates,leadId);
         return ResponseEntity.ok(updatedLead);
     }

@@ -29,7 +29,7 @@ public class AuthController {
     public ResponseEntity<?> Userlogin(@RequestBody Map<String, String> request) {
         try {
 
-            System.out.println(request.get("email")+" "+ request.get("password"));
+//            System.out.println(request.get("email")+" "+ request.get("password"));
             // Call the UsersLogin method and directly return its ResponseEntity
             return authService.UsersLogin(request.get("email"), request.get("password"));
         } catch (UsernameNotFoundException | BadCredentialsException ex) {
@@ -39,11 +39,11 @@ public class AuthController {
     }
 
 
-    @PostMapping("/AccountLogin")
-    public ResponseEntity<?> Accountlogin(@RequestBody Map<String, String> request) {
-        String token = authService.loginAccount(request.get("email"), request.get("password"));
-        return ResponseEntity.ok(Map.of("token", token));
-    }
+//    @PostMapping("/AccountLogin")
+//    public ResponseEntity<?> Accountlogin(@RequestBody Map<String, String> request) {
+//        String token = authService.loginAccount(request.get("email"), request.get("password"));
+//        return ResponseEntity.ok(Map.of("token", token));
+//    }
 
     @PostMapping("/UserLogout")
     public String DestroyToken (@PathVariable("token") String token)

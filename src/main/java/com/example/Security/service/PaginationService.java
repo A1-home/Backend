@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -86,12 +87,15 @@ public class PaginationService {
 
     public Map<String, Object> getPaginatedLeads(Long accountId,int page, int size) {
         // Create a Pageable object
-        Pageable pageable = PageRequest.of(page, size);
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        // Fetch paginated results
+//        Page<Leads> leadsPage = leadsRepository.LeadsByAccountId(accountId,pageable);
+//
+//        // Prepare the response map
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("updatedDate")));
+        Page<Leads> leadsPage = leadsRepository.LeadsByAccountId(accountId, pageable);
 
-        // Fetch paginated results
-        Page<Leads> leadsPage = leadsRepository.LeadsByAccountId(accountId,pageable);
-
-        // Prepare the response map
         Map<String, Object> response = new HashMap<>();
         response.put("leads", leadsPage.getContent()); // List of leads for the current page
         response.put("currentPage", leadsPage.getNumber());

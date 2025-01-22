@@ -32,6 +32,7 @@ public class Users {
     private String phoneNumber;  // Phone Number
     private String role;  // Role
 
+    private Integer roleId; // for mapping to its role
     private String password; // Add password field
 
     @Temporal(TemporalType.TIMESTAMP)

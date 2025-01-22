@@ -54,14 +54,39 @@ public class Leads {
     @Temporal(TemporalType.DATE)
     private Date startDate;  // Start Date
 
+    private String updatedBy;
+
+    @Temporal(TemporalType.TIMESTAMP)  // Store both date and time
+    private Date updatedDate;  // Updated Date with time
+
+    @PrePersist
+    public void prePersist() {
+        // Set the current date and time for updatedDate if it's a new record
+        if (this.updatedDate == null) {
+            this.updatedDate = new Date();  // Current date and time
+        }
+    }
+
+    @PreUpdate
+    public void updateTimestamps() {
+        // Update the updatedDate to the current date and time when the entity is updated
+        this.updatedDate = new Date();  // Current date and time
+    }
     // Remarks stored as JSON (Employee ID, remark, timestamp)
 //    @Column(columnDefinition = "json")
 
 
 
-    @Column(length = 2000)
-    private String remarks;
-// Remarks (as JSON string)
+//    @Column(length = 2000)
+//    private String remarks;
+//// Remarks (as JSON string)
+
+
+//    @Lob  // Marks this field as a large object (TEXT in DB)
+@Column(columnDefinition="TEXT")
+private String remarks;
+
+
 
     // AssignedTo stored as JSON (array of user IDs or usernames)
 //    @Temporal(TemporalType.TIMESTAMP)
@@ -146,7 +171,21 @@ public class Leads {
         this.leadId = leadId;
     }
 
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
 
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 
     public String getCreatedBy() {
         return createdBy;

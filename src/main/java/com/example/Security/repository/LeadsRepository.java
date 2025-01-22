@@ -246,7 +246,12 @@ public interface LeadsRepository extends JpaRepository<Leads,Long> {
     List<Leads> findByAccountId(@Param("accountId") Long accountId);
 
 //    @Query("SELECT l FROM leads l WHERE l.accountId = :accountId")
-@Query("SELECT l FROM Leads l WHERE l.accountId = :accountId")
-Page<Leads> LeadsByAccountId(@Param("accountId") Long accountId, Pageable pageable);
+//@Query("SELECT l FROM Leads l WHERE l.accountId = :accountId")
+//Page<Leads> LeadsByAccountId(@Param("accountId") Long accountId, Pageable pageable);
+
+    @Query("SELECT l FROM Leads l WHERE l.accountId = :accountId ORDER BY l.updatedDate DESC")
+    Page<Leads> LeadsByAccountId(@Param("accountId") Long accountId, Pageable pageable);
+
+
 
 }

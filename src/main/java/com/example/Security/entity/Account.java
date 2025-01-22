@@ -21,13 +21,18 @@ public class Account {
 
     private String companyName; // Company Name
 
+    private String representativeName;
+
     private String paymentId; // Payment ID
+
+    private Boolean isActive =true;
 
     private Integer totalLicense; // Total License
 
     private String email; // Email
 
-    private String password;
+
+
 
     private String phoneNumber; // Phone Number
 
@@ -52,13 +57,25 @@ public class Account {
 
     private LocalDateTime createdAt; // Created at
 
+    private String status; // Account status (e.g., pending, active, etc.)
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(); // Automatically set the creation date
+        if (this.status == null) {
+            this.status = "pending"; // Set default status if not provided
+        }
     }
-
     public Long getAccountId() {
         return accountId;
+    }
+
+    public String getRepresentativeName() {
+        return representativeName;
+    }
+
+    public void setRepresentativeName(String representativeName) {
+        this.representativeName = representativeName;
     }
 
     public void setAccountId(Long accountId) {
@@ -97,13 +114,7 @@ public class Account {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getPhoneNumber() {
         return phoneNumber;

@@ -63,6 +63,11 @@ public class UsersController {
         String email = (String) userData.get("email");
         String phoneNumber = (String) userData.get("phoneNumber");
         String role = (String) userData.get("role");
+
+// Check if the role is null or empty and set it to "Admin" if necessary
+        if (role == null || role.isEmpty()) {
+            role = "Admin";
+        }
 //        String password = (String) userData.get("password");
 
         String password="123456";
