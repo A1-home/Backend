@@ -119,13 +119,13 @@ public class QuatationItemListController {
         quotationItem.setSpecification(specification != null ? specification : "");
 
         // Handle file upload if a file is present
-        if (file != null && !file.isEmpty()) {
-            String imageKey = s3Service.uploadFile(file);  // Implement this method to upload the file to S3
-            quotationItem.setImageKey(imageKey);
-        } else {
-            // If no file is uploaded, set imageKey as null
-            quotationItem.setImageKey(null);
-        }
+//        if (file != null && !file.isEmpty()) {
+//            String imageKey = s3Service.uploadFile(file);  // Implement this method to upload the file to S3
+//            quotationItem.setImageKey(imageKey);
+//        } else {
+//            // If no file is uploaded, set imageKey as null
+//            quotationItem.setImageKey(null);
+//        }
 
         try {
             // Save the QuotationItem object to the database

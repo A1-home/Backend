@@ -1,6 +1,7 @@
 package com.example.Security.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -98,6 +99,7 @@ private String remarks;
     @JsonManagedReference
 //    @JsonBackReference
     @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JsonIgnore
     private List<Users> users;
 
 //    @JsonManagedReference

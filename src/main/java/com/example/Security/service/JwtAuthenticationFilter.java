@@ -167,7 +167,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Retrieve the Authorization header
         String authorizationHeader = request.getHeader("Authorization");
-//        System.out.println(authorizationHeader);
+        System.out.println(authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             // Extract the token from the header
             String token = authorizationHeader.substring(7);
@@ -186,7 +186,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String userName = claims.get("userName", String.class);
                 Long accountId = claims.get("accountId", Long.class);
                 String role = claims.get("role", String.class);
-
+                String accountName= claims.get("accountName",String.class);
                 if (email != null) {
                     // Populate the authentication object with user details
                     Map<String, Object> userDetails = Map.of(
@@ -194,7 +194,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             "userName", userName,
                             "accountId", accountId,
                             "role", role,
-                            "email", email
+                            "email", email,
+                            "accountName",accountName
+
                     );
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

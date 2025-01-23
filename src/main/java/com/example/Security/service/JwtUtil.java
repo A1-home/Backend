@@ -39,6 +39,7 @@ public class JwtUtil {
                 .claim("accountId",user.getAccount().getAccountId())
                 .claim("role", user.getRole()) // Include role
                 .claim("email", user.getEmail()) // Include email
+                .claim("accountName",user.getAccount().getCompanyName())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

@@ -36,8 +36,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless JWT-based APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**","/quotationLineItem/**","/quotationItem/**","/quotations/**","/leads/**","/cont/**","/users/**", "/check/**", "/budget/**", "/status/**", "/scope/**", "/source/**").permitAll() // Public endpoints
+//                                .requestMatchers("/leads/**").permitAll()
+                        .requestMatchers("/auth/**","/leads/**","/quotationLineItem/**","/quotationItem/**","/quotations/**","/cont/**","/users/**", "/check/**", "/budget/**", "/status/**", "/scope/**", "/source/**").permitAll() // Public endpoints
                         .anyRequest().authenticated() // All other endpoints require authentication
+
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
