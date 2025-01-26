@@ -98,7 +98,7 @@ private String remarks;
 //    @JsonBackReference
     @JsonManagedReference
 //    @JsonBackReference
-    @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "leads", cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch = FetchType.EAGER)
 //    @JsonIgnore
     private List<Users> users;
 
