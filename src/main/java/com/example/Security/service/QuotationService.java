@@ -1,5 +1,6 @@
 package com.example.Security.service;
 
+import com.example.Security.DTO.QuotationLineItemDTO;
 import com.example.Security.entity.Quotations;
 import com.example.Security.repository.QuotationsRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -91,5 +92,21 @@ public class QuotationService {
         }
     }
 
+
+    public Long addNewQuotation(QuotationLineItemDTO quotationLineItemDTO)
+    {
+        Quotations quotations=new Quotations();
+        quotations.setQuotationName("Draft Quotation");
+        quotations.setLeadId(quotationLineItemDTO.getLeadId());
+        quotations.setBaseAmount(quotationLineItemDTO.getRate()*quotationLineItemDTO.getQuantity());
+        quotations.setAccountId(quotationLineItemDTO.getAccountId());
+        quotations.setAuthorName(quotationLineItemDTO.getAuthor());
+        quotations.setIdDraft(true);
+        quotations.setItemCount(1);
+
+
+       Quotations q= quotationsRepository.save(quotations);
+        return q.getId();
+    }
 
 }

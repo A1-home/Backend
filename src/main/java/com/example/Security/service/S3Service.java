@@ -77,8 +77,11 @@ public class S3Service {
      * @param subFolder   The subfolder name within the account folder.
      * @param fileName    The original file name.
      * @return The presigned URL and the unique object key.
+     * generatE presigned url
      */
     public PresignedUrlResponse generateUploadUrl(String accountName, String accountId, String subFolder, String fileName) {
+
+//        System.out.println(accountName+accountName+subFolder+fileName);
         // Build folder path: accountName+accountId/subFolder/
         String folderPath = accountName + accountId + "/" + subFolder + "/";
         String uniqueFileName = UUID.randomUUID().toString() + "-" + fileName; // Append UUID to file name

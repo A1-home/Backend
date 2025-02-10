@@ -1,65 +1,28 @@
-package com.example.Security.entity;
+package com.example.Security.DTO;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+public class QuotationLineItemDTO {
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
-public class QuotationLineItem {
+    private String area;
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Primary key
+    private Long leadId;
+    private String category;
 
     private Long accountId;
-
     private Long quotationId;
-
-    private String area; // Area
-    private String category; // Category
-    private String subcategory; // Subcategory
-    private String item; // Select Item
+    private String subcategory;
+    private String item;
     private String unitOfMeasurement;
     private Double rate;
     private Integer quantity;
+    private String Description;
+    private String specification;
+    private String imageKey; // S3 object key
+    private String author;
+
+    private Boolean addToMainList;
 
 
-
-    @Column(columnDefinition="TEXT")
-    private String itemDescription; // Item description here
-
-    @Column(columnDefinition="TEXT")
-    private String specification; // Specification
-
-    private String imageKey; // Image key
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getQuotationId() {
-        return quotationId;
-    }
-
-    public void setQuotationId(Long quotationId) {
-        this.quotationId = quotationId;
-    }
-
+    // Getters and Setters
     public String getArea() {
         return area;
     }
@@ -116,12 +79,12 @@ public class QuotationLineItem {
         this.quantity = quantity;
     }
 
-    public String getItemDescription() {
-        return itemDescription;
+    public String getDescription() {
+        return Description;
     }
 
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public String getSpecification() {
@@ -138,5 +101,45 @@ public class QuotationLineItem {
 
     public void setImageKey(String imageKey) {
         this.imageKey = imageKey;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public Long getLeadId() {
+        return leadId;
+    }
+
+    public void setLeadId(Long leadId) {
+        this.leadId = leadId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getQuotationId() {
+        return quotationId;
+    }
+
+    public void setQuotationId(Long quotationId) {
+        this.quotationId = quotationId;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Boolean getAddToMainList() {
+        return addToMainList;
+    }
+
+    public void setAddToMainList(Boolean addToMainList) {
+        this.addToMainList = addToMainList;
     }
 }

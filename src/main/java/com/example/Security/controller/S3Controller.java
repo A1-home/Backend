@@ -28,6 +28,7 @@ public class S3Controller {
     @GetMapping("/generate-upload-url")
     public PresignedUrlResponse generateUploadUrl(@RequestParam String subFolder, @RequestParam String fileName) {
 
+//        System.out.println(accountName+accountId+subFolder+fileName);
         Map<String, Object> userDetails = jwtUtil.extractUserDetails();
 
         // Extract accountName as String
@@ -38,12 +39,14 @@ public class S3Controller {
         String accountId = String.valueOf(accountIdLong);
 
         // Generate and return the presigned URL
-        return s3Service.generateUploadUrl(accountName, accountId, subFolder, fileName);
+        return s3Service.generateUploadUrl(accountName, String.valueOf(accountId), subFolder, fileName);
     }
 
 
     @GetMapping("/generate-download-url")
     public String generateDownloadUrl(@RequestParam String objectKey) {
+//        System.out.println("object Key" + objectKey);
+        System.out.println(objectKey);
         return s3Service.generateDownloadUrl(objectKey);
     }
 }

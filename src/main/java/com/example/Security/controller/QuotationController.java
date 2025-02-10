@@ -62,6 +62,13 @@ public class QuotationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Quotation not found with ID: " + id);
         }
+
+
+
+
+
+
+
     }
 
 
@@ -69,6 +76,12 @@ public class QuotationController {
 
 
 
+
+
+    @GetMapping("/getQuotationIdByLead/{leadId}")
+    public Long findQuotationId(@PathVariable("leadId") Long leadId) {
+        return quotationsRepository.findQuotationIdByLead(leadId).orElse(0L); // Return 0 if no quotation is found
+    }
 
 
 

@@ -28,137 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String secretKey;
 
 
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-//            throws ServletException, IOException {
-//
-//        // Retrieve the Authorization header
-//        String authorizationHeader = request.getHeader("Authorization");
-//        System.out.println(request);
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            // Extract the token from the header
-//            String token = authorizationHeader.substring(7);
-//
-//            try {
-//                // Parse the token and extract claims
-//                Claims claims = Jwts.parserBuilder()
-//                        .setSigningKey(getSigningKey())
-//                        .build()
-//                        .parseClaimsJws(token)
-//                        .getBody();
-//
-//                // Extract user details from claims
-//                String email = claims.getSubject(); // Extracted subject (email)
-//                Long userId = claims.get("userId", Long.class);
-//                String userName = claims.get("userName", String.class);
-//                Long accountId = claims.get("accountId", Long.class);
-//                String role = claims.get("role", String.class);
-//
-//                // Populate the authentication object with user details
-//                if (email != null) {
-//                    Map<String, Object> userDetails = Map.of(
-//                            "userId", userId,
-//                            "userName", userName,
-//                            "accountId", accountId,
-//                            "role", role,
-//                            "email", email
-//                    );
-//
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-//                            userDetails, null, new ArrayList<>() // Authorities can be added here if needed
-//                    );
-//
-//                    // Set the authentication in the SecurityContext
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
-//            } catch (Exception e) {
-//                logger.error("Invalid JWT token", e);
-//            }
-//        }
-//
-//        // Continue the filter chain to the next filter or API endpoint
-//        chain.doFilter(request, response);
-//    }
 
-
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-//            throws ServletException, IOException {
-//
-//        // Print request details
-//        System.out.println("Request Method: " + request.getMethod());
-//        System.out.println("Request URI: " + request.getRequestURI());
-//        System.out.println("Request Protocol: " + request.getProtocol());
-//        System.out.println("Remote Address: " + request.getRemoteAddr());
-//
-//        // Print all headers
-//        System.out.println("Request Headers:");
-//        Enumeration<String> headerNames = request.getHeaderNames();
-//        while (headerNames.hasMoreElements()) {
-//            String headerName = headerNames.nextElement();
-//            System.out.println(headerName + ": " + request.getHeader(headerName));
-//        }
-//
-//        // Print all parameters
-//        System.out.println("Request Parameters:");
-//        Enumeration<String> parameterNames = request.getParameterNames();
-//        while (parameterNames.hasMoreElements()) {
-//            String paramName = parameterNames.nextElement();
-//            System.out.println(paramName + ": " + request.getParameter(paramName));
-//        }
-//
-//        // Print all attributes
-//        System.out.println("Request Attributes:");
-//        Enumeration<String> attributeNames = request.getAttributeNames();
-//        while (attributeNames.hasMoreElements()) {
-//            String attributeName = attributeNames.nextElement();
-//            System.out.println(attributeName + ": " + request.getAttribute(attributeName));
-//        }
-//
-//        // Print the Authorization header and process JWT token if present
-//        String authorizationHeader = request.getHeader("Authorization");
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            // Extract the token from the header
-//            String token = authorizationHeader.substring(7);
-//
-//            try {
-//                // Parse the token and extract claims
-//                Claims claims = Jwts.parserBuilder()
-//                        .setSigningKey(getSigningKey())
-//                        .build()
-//                        .parseClaimsJws(token)
-//                        .getBody();
-//
-//                // Extract user details from claims
-//                String email = claims.getSubject(); // Extracted subject (email)
-//                Long userId = claims.get("userId", Long.class);
-//                String userName = claims.get("userName", String.class);
-//                Long accountId = claims.get("accountId", Long.class);
-//                String role = claims.get("role", String.class);
-//
-//                // Populate the authentication object with user details
-//                if (email != null) {
-//                    Map<String, Object> userDetails = Map.of(
-//                            "userId", userId,
-//                            "userName", userName,
-//                            "accountId", accountId,
-//                            "role", role,
-//                            "email", email
-//                    );
-//
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-//                            userDetails, null, new ArrayList<>() // Authorities can be added here if needed
-//                    );
-//
-//                    // Set the authentication in the SecurityContext
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
-//            } catch (Exception e) {
-//                logger.error("Invalid JWT token", e);
-//            }
-//        }
-//
-//        // Continue the filter chain to the next filter or API endpoint
-//        chain.doFilter(request, response);
-//    }
 
 
     @Override
@@ -167,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Retrieve the Authorization header
         String authorizationHeader = request.getHeader("Authorization");
-        System.out.println(authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             // Extract the token from the header
             String token = authorizationHeader.substring(7);
@@ -186,7 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String userName = claims.get("userName", String.class);
                 Long accountId = claims.get("accountId", Long.class);
                 String role = claims.get("role", String.class);
-                String accountName= claims.get("accountName",String.class);
+                String accountName = claims.get("accountName", String.class);
+
                 if (email != null) {
                     // Populate the authentication object with user details
                     Map<String, Object> userDetails = Map.of(
@@ -195,8 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             "accountId", accountId,
                             "role", role,
                             "email", email,
-                            "accountName",accountName
-
+                            "accountName", accountName
                     );
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -207,7 +76,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception e) {
-                logger.error("Invalid JWT token", e);
+                // Instead of throwing an error, inform the user to log in again
+                logger.warn("Invalid or expired JWT token, please log in again.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set 401 status
+                response.getWriter().write("Invalid or expired token, please log in again.");
+                return; // End the request processing here
             }
         }
 

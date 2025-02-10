@@ -12,4 +12,6 @@ import java.util.List;
 public interface QuotationsLineItemRepository extends JpaRepository<QuotationLineItem,Long> {
     @Query("SELECT q FROM QuotationLineItem q WHERE q.quotationId = :quotationId")
     List<QuotationLineItem> findByQuotationId(@Param("quotationId") Long quotationId);
+
+
 }

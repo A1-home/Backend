@@ -1,21 +1,21 @@
 package com.example.Security.controller;
 
-import com.example.Security.DTO.QuotationItemListResponseDTO;
 import com.example.Security.entity.QuotationItemList;
 import com.example.Security.repository.QuotationItemListRepository;
+import com.example.Security.service.JwtUtil;
 import com.example.Security.service.QuotationItemListService;
 import com.example.Security.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @RequestMapping("/quotationItem")
 public class QuatationItemListController {
@@ -27,12 +27,77 @@ public class QuatationItemListController {
     private S3Service s3Service;
 
     @Autowired
+    private  JwtUtil jwtUtil;
+
+    @Autowired
     private QuotationItemListService quotationItemListService;
-    @GetMapping("/findByAccountId/{accountId}")
-    public ResponseEntity<QuotationItemListResponseDTO> findQuotation(@PathVariable("accountId") Long accountId) {
-        QuotationItemListResponseDTO response = quotationItemListService.findQuotationByAccountId(accountId);
+
+    public QuatationItemListController(QuotationItemListRepository quotationItemListRepository) {
+        this.quotationItemListRepository = quotationItemListRepository;
+    }
+//    @GetMapping("/findByAccountId/{accountId}")
+//    public ResponseEntity<QuotationItemListResponseDTO> findQuotation(@PathVariable("accountId") Long accountId) {
+//        QuotationItemListResponseDTO response = quotationItemListService.findQuotationByAccountId(accountId);
+//        return ResponseEntity.ok(response);
+//    }
+
+
+
+    @GetMapping("/findByAccountId")
+    public ResponseEntity<?> findQuotation() {
+
+
+        Map<String, Object> userDetails = jwtUtil.extractUserDetails();
+        if (userDetails == null) {
+            return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
+        }
+        Long accountId = (Long) userDetails.get("accountId");
+        // Fetch the list of items for the given accountId
+        List<QuotationItemList> items = quotationItemListRepository.findByAccountId(accountId);
+
+        // Group and structure the data with an array of items under each subcategory
+        Map<String, Map<String, Map<String, List<Object>>>> groupedData = items.stream()
+                .collect(Collectors.groupingBy(
+                        QuotationItemList::getArea, // Group by area
+                        Collectors.groupingBy(
+                                QuotationItemList::getCategory, // Group by category
+                                Collectors.groupingBy(
+                                        QuotationItemList::getSubcategory, // Group by subcategory
+                                        Collectors.mapping(item -> {
+                                            // Create the list for each subcategory
+                                            List<Object> itemList = new ArrayList<>();
+
+                                            // Add item details as a map
+                                            Map<String, Object> itemDetails = new HashMap<>();
+                                            itemDetails.put("items", item.getItem());
+                                            itemDetails.put("unitOfMeasurement", Optional.ofNullable(item.getUnitOfMeasurement()).orElse("N/A"));
+                                            itemDetails.put("rate", Optional.ofNullable(item.getRate()).orElse(0.0));
+                                            itemDetails.put("imageKey", Optional.ofNullable(item.getImageKey()).orElse("N/A"));
+                                            itemDetails.put("description", Optional.ofNullable(item.getItemDescription()).orElse("N/A"));
+                                            itemDetails.put("specification", Optional.ofNullable(item.getSpecification()).orElse("N/A"));
+
+                                            // Add details to the list
+                                            itemList.add(itemDetails);
+
+                                            return itemList; // Return the full list for the item
+                                        }, Collectors.toList()) // Collecting items into an array (list)
+                                )
+                        )
+                ));
+
+        // Fetch distinct units of measurement for the given accountId
+        List<String> units = quotationItemListRepository.findDistinctUnitOfMeasurementByAccountId(accountId);
+
+        // Create a response object to include both groupedData and units
+        Map<String, Object> response = new HashMap<>();
+        response.put("groupedData", groupedData); // Add grouped data
+        response.put("units", units); // Add units list
+
+        // Return the response object
         return ResponseEntity.ok(response);
     }
+
+
 
 
     @PostMapping("/upload")
@@ -96,8 +161,7 @@ public class QuatationItemListController {
             @RequestParam(value = "unitOfMeasurement", required = false) String unitOfMeasurement,
             @RequestParam(value = "rate", required = false) Double rate,
             @RequestParam(value = "itemDescription", required = false) String itemDescription,
-            @RequestParam(value = "specification", required = false) String specification,
-            @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestParam(value = "specification", required = false) String specification) throws IOException {
 
         // Validate accountId, if not provided return a bad request
         if (accountId == null) {
@@ -175,6 +239,8 @@ public class QuatationItemListController {
             return new ResponseEntity<>("Error while deleting the quotation item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
 }

@@ -17,10 +17,10 @@ public class Quotations {
     private Long id;
 
 
-    private String accountId;
+    private Long accountId;
 
 
-    private String leadId; //author
+    private Long leadId; //author
 
 
     private String quotationName;
@@ -76,11 +76,11 @@ public class Quotations {
         this.id = id;
     }
 
-    public String getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 
@@ -125,15 +125,13 @@ public class Quotations {
         leadName = leadName;
     }
 
-    public String getLeadId() {
+    public Long getLeadId() {
         return leadId;
     }
 
-    public void setLeadId(String leadId) {
+    public void setLeadId(Long leadId) {
         this.leadId = leadId;
     }
-
-
 
     public Double getBaseAmount() {
         return baseAmount;

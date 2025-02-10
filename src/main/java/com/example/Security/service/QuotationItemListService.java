@@ -1,7 +1,9 @@
 package com.example.Security.service;
 
 import com.example.Security.DTO.QuotationItemListResponseDTO;
+import com.example.Security.DTO.QuotationLineItemDTO;
 import com.example.Security.entity.QuotationItemList;
+import com.example.Security.entity.QuotationLineItem;
 import com.example.Security.repository.QuotationItemListRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -106,6 +108,32 @@ public class QuotationItemListService {
         quotationItemListRepository.saveAll(quotationItems);
     }
 
+    public String saveQuotationItemList(QuotationLineItemDTO dto) {
+        try {
+            // Create a new QuotationItemList entity
+            QuotationItemList lineItem = new QuotationItemList();
+            lineItem.setAccountId(dto.getAccountId());
+            lineItem.setArea(dto.getArea());
+            lineItem.setCategory(dto.getCategory());
+            lineItem.setSubcategory(dto.getSubcategory());
+            lineItem.setItem(dto.getItem());
+            lineItem.setUnitOfMeasurement(dto.getUnitOfMeasurement());
+            lineItem.setRate(dto.getRate());
+            lineItem.setItemDescription(dto.getDescription());
+            lineItem.setSpecification(dto.getSpecification());
+            lineItem.setImageKey(dto.getImageKey());
+
+            // Save the entity
+            quotationItemListRepository.save(lineItem);
+
+            // Return a success message
+            return "Item saved successfully!";
+        } catch (Exception e) {
+            // Log the error and return an error message
+            e.printStackTrace();
+            return "Failed to save item: " + e.getMessage();
+        }
+    }
     private String getCellValue(Row row, int columnIndex) {
         Cell cell = row.getCell(columnIndex);
         return (cell == null || cell.getCellType() == CellType.BLANK) ? "" : cell.toString().trim();

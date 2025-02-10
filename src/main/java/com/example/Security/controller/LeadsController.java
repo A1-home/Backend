@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/leads")
 public class LeadsController {
@@ -323,67 +323,69 @@ public class LeadsController {
 
 //    aage se account Id bhi lenge leads find karne ke liye
 
-
-    @GetMapping("/findAll/{accountId}")
-    public ResponseEntity<?> findAllLeads(
-            @PathVariable("accountId") Long accountId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
-        try {
-            // Call the service to get paginated data
-            Map<String, Object> response = paginationService.getPaginatedLeads(accountId,page, size);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-
-
 //
 //    @GetMapping("/findAll/{accountId}")
-//    public ResponseEntity<?> findAllLead(
+//    public ResponseEntity<?> findAllLeads(
 //            @PathVariable("accountId") Long accountId,
 //            @RequestParam(defaultValue = "0") int page,
 //            @RequestParam(defaultValue = "8") int size) {
 //        try {
-////            System.out.println("called");
-//
-//
-//            // Use the TokenService to extract user details
-//
-//            Map<String, Object> userDetails = jwtUtil.extractUserDetails();
-//            if (userDetails == null) {
-//                return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
-//            }
-//
-//
-//
-//            // Extract specific user information if needed
+//            // Call the service to get paginated data
+//            Map<String, Object> response = paginationService.getPaginatedLeads(accountId,page, size);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
+
+
+
+    @GetMapping("/findAll")
+    public ResponseEntity<?> findAllLead(
+           // @PathVariable("accountId") Long accountId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        try {
+//            System.out.println("called");
+
+
+            // Use the TokenService to extract user details
+
+            Map<String, Object> userDetails = jwtUtil.extractUserDetails();
+            if (userDetails == null) {
+                return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
+            }
+            Long accountId = (Long) userDetails.get("accountId");
+//            System.out.println(userDetails);
+
+
+
+
+            // Extract specific user information if needed
 //            Long userId = (Long) userDetails.get("userId");
 //            String userName = (String) userDetails.get("userName");
 //            String email = (String) userDetails.get("email");
 //            String role = (String) userDetails.get("role");
 //            String accountName=(String) userDetails.get("accountName");
-////            System.out.println(userDetails);
-//
-//            // Log or use the extracted details as needed
-//            // logger.info("Authenticated User Details: userId={}, userName={}, email={}, role={}", userId, userName, email, role);
-//
-//            // Call the service to get paginated data
-//            Map<String, Object> response = paginationService.getPaginatedLeads(accountId, page, size);
-//
-//            // Add user-related info to the response if needed
-////            response.put("userDetails", userDetails);
-//
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e) {
-//            // logger.error("Error fetching leads", e);
-//            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+
+            // Log or use the extracted details as needed
+            // logger.info("Authenticated User Details: userId={}, userName={}, email={}, role={}", userId, userName, email, role);
+
+            // Call the service to get paginated data
+            Map<String, Object> response = paginationService.getPaginatedLeads(accountId, page, size);
+
+            // Add user-related info to the response if needed
+//            response.put("userDetails", userDetails);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            // logger.error("Error fetching leads", e);
+            return new ResponseEntity<>("An error occurred while fetching leads", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 
@@ -475,11 +477,19 @@ public class LeadsController {
 
     @GetMapping("/searchLeads")
     public ResponseEntity<?> searchLeadsByFlexibleName(
-            @RequestParam("accountId") Long accountId, // Include accountId
+//            @RequestParam("accountId") Long accountId, // Include accountId
+//            Long accountId=
             @RequestParam("name") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size) {
         try {
+
+            Map<String, Object> userDetails = jwtUtil.extractUserDetails();
+            if (userDetails == null) {
+                return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
+            }
+            Long accountId = (Long) userDetails.get("accountId");
+
             // Call the service method for paginated search
             Map<String, Object> response = paginationService.getPaginatedLeadsBySearchName(accountId, name, page, size);
 
