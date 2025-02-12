@@ -29,4 +29,36 @@ public class PaymentPlan {
     @OneToMany(mappedBy = "paymentPlan", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<PlanDetail> planDetails;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getPaymentPlanName() {
+        return paymentPlanName;
+    }
+
+    public void setPaymentPlanName(String paymentPlanName) {
+        this.paymentPlanName = paymentPlanName;
+    }
+
+    public List<PlanDetail> getPlanDetails() {
+        return planDetails;
+    }
+
+    public void setPlanDetails(List<PlanDetail> planDetails) {
+        this.planDetails = planDetails;
+    }
 }

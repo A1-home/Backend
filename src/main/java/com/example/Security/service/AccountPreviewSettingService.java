@@ -5,6 +5,8 @@ import com.example.Security.entity.*;
 import com.example.Security.repository.*;
 
 import jakarta.transaction.Transactional;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Getter
+@Setter
 public class AccountPreviewSettingService {
 
     @Autowired
@@ -38,39 +42,104 @@ public class AccountPreviewSettingService {
     @Autowired
     private PaymentPlanRepository paymentPlanRepository;
 
+//    public AccountSettingsResponse getAccountSettings(Long accountId) {
+//        // Fetch data from repositories
+//        System.out.println(accountId);
+//        AccountPreviewSetting accountPreviewSetting = accountPreviewSettingRepository.findByAccountId(accountId);
+//
+//        PreviewColumn previewColumns = previewColumnRepository.findByAccountId(accountId);
+//        PreviewDescription previewDescriptions = previewDescriptionRepository.findByAccountId(accountId);
+//        PreviewSection previewSections = previewSectionRepository.findByAccountId(accountId);
+//        List<TermsCondition> termsConditions = termsConditionRepository.findByAccountId(accountId);
+//        List<AdditionalPage> additionalPages = additionalPageRepository.findByAccountId(accountId);
+//        AccountGST accountGST = accountGSTRepository.findByAccountId(accountId);
+//        List<PaymentPlan> paymentPlans = paymentPlanRepository.findByAccountId(accountId);
+//
+//        // No modification to id and accountId fields
+//        AccountSettingsResponse response = new AccountSettingsResponse();
+//
+//        // Set accountPreviewSetting with its current fields (id and accountId are not modified)
+//        response.setAccountPreviewSetting(accountPreviewSetting);
+//
+//        // Set the previewColumns, previewDescriptions, previewSections (without changing id and accountId)
+//        response.setPreviewColumns(previewColumns);
+//        response.setPreviewDescriptions(previewDescriptions);
+//        response.setPreviewSections(previewSections);
+//        response.setTermsConditions(termsConditions);
+//        response.setAdditionalPages(additionalPages);
+//        response.setAccountGST(accountGST);
+//        response.setPaymentPlans(paymentPlans);
+//
+//        System.out.println(response);
+//
+//        return response;
+//    }
+
+
     public AccountSettingsResponse getAccountSettings(Long accountId) {
+        // Print the accountId to verify it's being passed correctly
+        System.out.println("Fetching settings for accountId: " + accountId);
+
         // Fetch data from repositories
-        System.out.println(accountId);
         AccountPreviewSetting accountPreviewSetting = accountPreviewSettingRepository.findByAccountId(accountId);
+        System.out.println("AccountPreviewSetting: " + accountPreviewSetting);
 
         PreviewColumn previewColumns = previewColumnRepository.findByAccountId(accountId);
-        PreviewDescription previewDescriptions = previewDescriptionRepository.findByAccountId(accountId);
-        PreviewSection previewSections = previewSectionRepository.findByAccountId(accountId);
-        List<TermsCondition> termsConditions = termsConditionRepository.findByAccountId(accountId);
-        List<AdditionalPage> additionalPages = additionalPageRepository.findByAccountId(accountId);
-        AccountGST accountGST = accountGSTRepository.findByAccountId(accountId);
-        List<PaymentPlan> paymentPlans = paymentPlanRepository.findByAccountId(accountId);
+        System.out.println("PreviewColumns: " + previewColumns);
 
-        // No modification to id and accountId fields
+        PreviewDescription previewDescriptions = previewDescriptionRepository.findByAccountId(accountId);
+        System.out.println("PreviewDescriptions: " + previewDescriptions);
+
+        PreviewSection previewSections = previewSectionRepository.findByAccountId(accountId);
+        System.out.println("PreviewSections: " + previewSections);
+
+        List<TermsCondition> termsConditions = termsConditionRepository.findByAccountId(accountId);
+        System.out.println("TermsConditions: " + termsConditions);
+
+        List<AdditionalPage> additionalPages = additionalPageRepository.findByAccountId(accountId);
+        System.out.println("AdditionalPages: " + additionalPages);
+
+        AccountGST accountGST = accountGSTRepository.findByAccountId(accountId);
+        System.out.println("AccountGST: " + accountGST);
+
+        List<PaymentPlan> paymentPlans = paymentPlanRepository.findByAccountId(accountId);
+        System.out.println("PaymentPlans: " + paymentPlans);
+
+        // Create the response object
         AccountSettingsResponse response = new AccountSettingsResponse();
+        System.out.println("Created empty response object: " + response);
 
         // Set accountPreviewSetting with its current fields (id and accountId are not modified)
         response.setAccountPreviewSetting(accountPreviewSetting);
+        System.out.println("Set AccountPreviewSetting in response: " + response.getAccountPreviewSetting());
 
         // Set the previewColumns, previewDescriptions, previewSections (without changing id and accountId)
         response.setPreviewColumns(previewColumns);
-        response.setPreviewDescriptions(previewDescriptions);
-        response.setPreviewSections(previewSections);
-        response.setTermsConditions(termsConditions);
-        response.setAdditionalPages(additionalPages);
-        response.setAccountGST(accountGST);
-        response.setPaymentPlans(paymentPlans);
+        System.out.println("Set PreviewColumns in response: " + response.getPreviewColumns());
 
-        System.out.println(response);
+        response.setPreviewDescriptions(previewDescriptions);
+        System.out.println("Set PreviewDescriptions in response: " + response.getPreviewDescriptions());
+
+        response.setPreviewSections(previewSections);
+        System.out.println("Set PreviewSections in response: " + response.getPreviewSections());
+
+        response.setTermsConditions(termsConditions);
+        System.out.println("Set TermsConditions in response: " + response.getTermsConditions());
+
+        response.setAdditionalPages(additionalPages);
+        System.out.println("Set AdditionalPages in response: " + response.getAdditionalPages());
+
+        response.setAccountGST(accountGST);
+        System.out.println("Set AccountGST in response: " + response.getAccountGST());
+
+        response.setPaymentPlans(paymentPlans);
+        System.out.println("Set PaymentPlans in response: " + response.getPaymentPlans());
+
+        // Print the final response object
+        System.out.println("Final response object: " + response);
 
         return response;
     }
-
     @Transactional
     public void updateAccountSettings(AccountSettingsResponse request) {
         AccountPreviewSetting accountPreviewSetting = request.getAccountPreviewSetting();

@@ -12,7 +12,11 @@ import java.util.Optional;
 @Repository
 public interface UsersRepository extends CrudRepository<Users,Long> {
 
+//    Users findByEmail(String email);
     Optional<Users> findByEmail(String email);
+
+    @Query("SELECT u FROM Users u WHERE u.email = :email")
+    Users findByUserEmail(String email);
 
     @Query("SELECT COUNT(u) FROM Users u WHERE u.isActive = true AND u.account.accountId = :accountId")
     long countActiveUsers(@Param("accountId") Long accountId);

@@ -23,5 +23,27 @@ public class AccountGST {
 
     private Long tax;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getTax() {
+        return tax;
+    }
+
+    public void setTax(Long tax) {
+        this.tax = tax;
+    }
 }

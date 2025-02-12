@@ -37,6 +37,101 @@ public class AccountPreviewSetting {
     private Long rowsToShowId = 0L;
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getLeadId() {
+        return leadId;
+    }
+
+    public void setLeadId(Long leadId) {
+        this.leadId = leadId;
+    }
+
+    public Long getQuotationId() {
+        return quotationId;
+    }
+
+    public void setQuotationId(Long quotationId) {
+        this.quotationId = quotationId;
+    }
+
+    public Long getPaymentPlanId() {
+        return paymentPlanId;
+    }
+
+    public void setPaymentPlanId(Long paymentPlanId) {
+        this.paymentPlanId = paymentPlanId;
+    }
+
+    public Long getTermId() {
+        return termId;
+    }
+
+    public void setTermId(Long termId) {
+        this.termId = termId;
+    }
+
+    public String getAdditionalPageIdsString() {
+        return additionalPageIdsString;
+    }
+
+    public void setAdditionalPageIdsString(String additionalPageIdsString) {
+        this.additionalPageIdsString = additionalPageIdsString;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public Long getRowsToShowId() {
+        return rowsToShowId;
+    }
+
+    public void setRowsToShowId(Long rowsToShowId) {
+        this.rowsToShowId = rowsToShowId;
+    }
+
+    public Long getColumnsToShowId() {
+        return columnsToShowId;
+    }
+
+    public void setColumnsToShowId(Long columnsToShowId) {
+        this.columnsToShowId = columnsToShowId;
+    }
+
+    public Long getDescriptionToShowId() {
+        return DescriptionToShowId;
+    }
+
+    public void setDescriptionToShowId(Long descriptionToShowId) {
+        DescriptionToShowId = descriptionToShowId;
+    }
+
+    public List<Long> getAdditionalPageIds() {
+        return additionalPageIds;
+    }
+
+    public void setAdditionalPageIds(List<Long> additionalPageIds) {
+        this.additionalPageIds = additionalPageIds;
+    }
 
     private Long columnsToShowId = 0L;
 

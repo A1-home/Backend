@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class JwtUtil {
@@ -45,21 +46,20 @@ public class JwtUtil {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-//    public String generateToken(Users user) {
-//        // Include user and account details in the JWT token claims
-//        return Jwts.builder()
-//                .setSubject(user.getEmail()) // Use email as the subject
-//                .claim("userId", user.getUserId()) // Include userId
-//                .claim("userName", user.getUserName()) // Include userName
-//                .claim("role", user.getRole()) // Include role
-//                .claim("email", user.getEmail()) // Include email
-//                .claim("phoneNumber", user.getPhoneNumber()) // Include phone number
-//                .claim("account", user.getAccount()) // Include account details
-//                .setIssuedAt(new Date()) // Token issue date
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Token expiration (1 hour)
-//                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Sign the token
-//                .compact();
-//    }
+    public String generateToken2(Users user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("userId",user.getUserId())
+                .claim("userName",user.getUserName())
+                .claim("accountId",user.getAccount().getAccountId())
+                .claim("role", user.getRole()) // Include role
+                .claim("email", user.getEmail()) // Include email
+                .claim("accountName",user.getAccount().getCompanyName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 
     // Method to extract the email from the token
     public String extractEmail(String token) {

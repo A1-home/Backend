@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface PreviewColumnRepository extends JpaRepository<PreviewColumn,Long> {
-    @Query("SELECT p FROM PreviewColumn p WHERE p.accountId = :accountId OR p.accountId = 0 ORDER BY CASE WHEN p.accountId = :accountId THEN 1 ELSE 2 END")
+    @Query("SELECT p FROM PreviewColumn p WHERE p.accountId = :accountId OR p.accountId = 0L ORDER BY CASE WHEN p.accountId = :accountId THEN 1 ELSE 2 END")
     PreviewColumn findByAccountId(@Param("accountId") Long accountId);
 
     PreviewColumn findByAccountIdAndLeadId(@Param("accountId") Long accountId, @Param("leadId") Long leadId);

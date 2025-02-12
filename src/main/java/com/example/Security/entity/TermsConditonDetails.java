@@ -10,7 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Getter@Setter
-public class TermsConditonDetails {
+public class
+TermsConditonDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +24,29 @@ public class TermsConditonDetails {
     @JoinColumn(name = "terms_condition_id", nullable = false) // Foreign key column referencing TermsCondition
     @JsonBackReference
     private TermsCondition termsCondition;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public TermsCondition getTermsCondition() {
+        return termsCondition;
+    }
+
+    public void setTermsCondition(TermsCondition termsCondition) {
+        this.termsCondition = termsCondition;
+    }
 }

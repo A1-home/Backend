@@ -25,5 +25,35 @@ public class AdditionalPage {
 
     private String objectKey;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getAddtionalPageName() {
+        return addtionalPageName;
+    }
+
+    public void setAddtionalPageName(String addtionalPageName) {
+        this.addtionalPageName = addtionalPageName;
+    }
+
+    public String getObjectKey() {
+        return objectKey;
+    }
+
+    public void setObjectKey(String objectKey) {
+        this.objectKey = objectKey;
+    }
 }
