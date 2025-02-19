@@ -107,7 +107,7 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true); // Allow credentials (tokens)
-        corsConfiguration.addAllowedOrigin("http://localhost:3000"); // Allow React frontend URL (replace if needed)
+        corsConfiguration.addAllowedOrigin("http://localhost:3002"); // Allow React frontend URL (replace if needed)
 //        corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("Authorization"); // Allow the Authorization header
         corsConfiguration.addAllowedHeader("Content-Type"); // Allow Content-Type header
